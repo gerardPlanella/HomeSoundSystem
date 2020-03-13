@@ -1,0 +1,18 @@
+KNN:
+
+Three different KNN algorithms Brute force, ball tree and KD tree. Due to having 13 dimensions and an increased number of samples,
+KD tree will be the most efficient. This is due to the fact that KDTree O[Dlog(N)] and Bruteforce O[DN]. 
+Also bruteforce is more effcient when we have less than 30 samples.
+
+
+Neural Networks: 
+
+Multi Layer Perception (MLP) Classifier.
+The model supports multi-label classification in which a sample can belong to more than one class.
+We have found NNs to be more efficient than KNN offering the same accuracy. 
+
+
+SVM: Radial Basis Function (RBF) kernel SVM.
+
+
+
