@@ -1,5 +1,5 @@
 # HomeSoundSystem
-Implementation of the HomeSound Robot system
+Implementation of the HomeSound Robot system for Robotics Trends.
 
 Adding code:
     git pull origin <branch>
