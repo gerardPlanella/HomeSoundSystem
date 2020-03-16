@@ -15,6 +15,7 @@ print("Waiting for connection\n")
 s.listen()
 conn, addr = s.accept()
 print('Connected by', addr)
+
 data = conn.recv(1024)
 if not data:
     conn.sendall(KO.encode())
