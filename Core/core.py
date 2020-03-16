@@ -1,6 +1,7 @@
 import socket
 import threading
 import dedicatedServer
+from events import event, threadInfo
 
 ## TODO: Make Client class
 
@@ -11,18 +12,6 @@ sensorNames = ['kitchen', 'living_room', 'bath_room', 'bed_room']
 sensorThreads = []
 
 threadInfo = threadInfo()
-
-class threadInfo():
-    __slots__ = ["running"]
-
-    def __init__(self):
-        self.running = True
-
-    def setRun(self, running):
-        self.running = running
-    def getRun(self):
-        return self.running
-
 
 def main():
 
