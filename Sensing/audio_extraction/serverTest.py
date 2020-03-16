@@ -1,7 +1,9 @@
+#Made by Gerard Planella
+
 import socket
 import json
 import sys
-import numpy 
+import numpy as np
 
 HOST = '127.0.0.1'  # Standard loopback interface address (localhost)
 PORT = 8000        # Port to listen on (non-privileged ports are > 1023)
