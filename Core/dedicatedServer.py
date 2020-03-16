@@ -21,6 +21,7 @@ def getComponentsFromMessage(msg):
     msg = np.array(msg)
     return msg.astype(np.float)
 
+#TODO: 
 def getComponentsFromMessage(message):
     return
 
