@@ -1,4 +1,5 @@
 import socket
+import numpy as np
 
 DEBUGGING = True
 
@@ -17,8 +18,11 @@ def receiveString(socket):
 def getComponentsFromMessage(msg):
     msg = str_data.split(' ')
     msg = list(filter(lambda a: a != '', msg))
-    msg = np.array(,sg)
+    msg = np.array(msg)
     return msg.astype(np.float)
+
+def getComponentsFromMessage(message):
+    return
 
 #TODO: reforçar seguretat en cas de detectar algun error
 def runDS(threadInfo, socket):
