@@ -1,8 +1,20 @@
-%% CONFIGURACIÓ  Gerard Planella & Laura Martin
+%% Config 
+
+%Classifier Core IP and port
+addr = '127.0.0.1'; %localhost for now
+port = 8000;
+sensorName = 'kitchen';
+
+
+
 % Directori a on tenim les dades etiquetades
-dirName = 'H:\OneDrive - La Salle\Ingenieria electronica y robotica\4o\S2\Robotic Tendencies\audio_extraction\soundscapes';
+dirName = '.\soundscapes';
 % Path la carpeta amb les funcions d'extracció de característiques (MFCC)
-path_feature_extraction = 'H:\OneDrive - La Salle\Ingenieria electronica y robotica\4o\S2\Robotic Tendencies\audio_extraction\Feature extraction';
+path_feature_extraction = '.\Feature extraction';
+
+path_server_functions = '.\serverFunctions';
+
+
 
 % Simulation parameters
 stWin = 100e-3;         % short-term window size (in seconds)
@@ -11,6 +23,7 @@ classLabels = {'Bus','Car','CityPark','Classroom','Countryside','Crowd','Factory
 knn_K = 3;              % KNN parameter K value
 %--------------------------------------------------------------------------
 addpath(path_feature_extraction);
+addpath(path_server_functions);
 % Parametrize dirName WAV files, and obtain feature parameters in
 % mtFeatures cell array and filenames in FileNames cell array
 disp('Parametritzant corpus ...')
@@ -36,17 +49,35 @@ nclass = length(classLabels);
 mapping = randperm(nExamples);
 features_rand = features(mapping,:);
 classIndex_rand = classIndex(mapping,:);
+%% Send Data
 
-components = table(classIndex_rand, features_rand);
-components_json = jsonencode(components);
+% 
+% components = table(classIndex_rand, features_rand);
+% components_json = jsonencode(components);
+% 
+% %Send to JSON for evaluation of classification parameters in python
+% fid = fopen('components.json','wt');
+% fprintf(fid, components_json);
+% fclose(fid);
+% 
+%Connect to python server
+sock = serverConnect(addr, port, sensorName);
 
-%Send to JSON for evaluation of classification parameters in python
-fid = fopen('components.json','wt');
-fprintf(fid, components_json);
-fclose(fid);
+N_AUDIOS = 2;
+
+for i = 1:N_AUDIOS 
+    %Send two audio features (13*2 MFCC components)
+    if (serverSendComponents(sock, features_rand(i, :)) == 0) 
+        fprintf('Error sending component %d\n',i);
+        break;
+    end
+end
+
+serverDisconnect(sock);
+disp('Disconnected from Server')
 
 
-%% KNN
+%% KNN: Done in python [Miquel & Gerard]
 % Escollim el primer 75% de les dades per entrenar 
 learnDB = features_rand(1:round(nExamples*0.75),:);
 learnGT = classIndex_rand(1:round(nExamples*0.75),:);
