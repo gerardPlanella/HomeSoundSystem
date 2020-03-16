@@ -19,7 +19,7 @@ class threadInfo():
     def addEvent(self, event):
         self.events.append(event)
 
-    def nEvents(self)
+    def nEvents(self):
         return len(self.events)
 
 
