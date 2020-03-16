@@ -1,7 +1,6 @@
 #Made by Gerard Planella
 
 import socket
-import json
 import sys
 import numpy as np
 
@@ -9,7 +8,6 @@ HOST = '127.0.0.1'  # Standard loopback interface address (localhost)
 PORT = 8000        # Port to listen on (non-privileged ports are > 1023)
 OK = "ok"
 KO = "ko"
-
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.bind((HOST, PORT))
@@ -43,4 +41,3 @@ while True:
     conn.sendall(OK.encode())
 
 print("Communication DONE\n")
-       
