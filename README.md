@@ -17,7 +17,19 @@ Implementation of the HomeSound Robot system for Robotics Trends.
 
 ## Branching:
 ```
-- git checkout -b <branch-name>
+- git checkout -b <new-branch-name>
 - git commit -a -m "<added branch/changes to such branch>"
+- git push origin <new-branch-name>
 ```
-> Arroyo com es fan pull requests i tal?
+
+## Pull Request
+When all the additions to a branch are done, and all the code inside is functional, a Pull Request can be created to merge your code (in your particular branch) with the existing code in the master branch.
+```
+- Create your branch and make some changes.
+Share the branch with everybody with: 
+- git push origin <new-branch-name>
+Go to https://github.com/gerardPlanella/HomeSoundSystem and enter the top tab "Pull requests".
+- Press the green button "New pull request"
+- Change the compare branch with your branch.
+- Create the pull request. Add a brief explanation about your work/modules.
+```
