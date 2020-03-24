@@ -1,6 +1,20 @@
 # HomeSoundSystem
 Implementation of the HomeSound Robot system for Robotics Trends.
 
+##Deps
+```
+python3
+tensorflow 1.4.1+ && <2.0 (Dont install it directly with pip. Use pip install tensorflow= and get a version between the range.)
+opencv3
+protobuf
+python3-tk
+slidingwindow
+```
+Install the rest of the pose estimation dependencies:
+  ```
+  cd tf_pose
+  python setup.py install  # Or, `pip install -e .`
+```
 ## Adding code:
 ```
 - git pull origin <branch>          # Recommended
