@@ -1,7 +1,7 @@
 # HomeSoundSystem
 Implementation of the HomeSound Robot system for Robotics Trends.
 
-##Deps
+## Deps
 ```
 python3
 tensorflow 1.4.1+ && <2.0 (Dont install it directly with pip. Use pip install tensorflow= and get a version between the range.)
