@@ -1,7 +1,7 @@
 function [sock, ok] = serverConnect(addr, port, sensorName)
 %Connects to the python server and performs handshake
 ok = 0;
-sock = tcpip(addr, port, 'NetworkRole', 'client');
+sock = udp(addr, port);
 fopen(sock);
 
 flushinput(sock);

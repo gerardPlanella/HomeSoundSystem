@@ -7,8 +7,10 @@ sensorName = 'kitchen';
 
 
 
+active_dataset  = 'AudioDataset';
+
 % Directori a on tenim les dades etiquetades
-dirName = '.\soundscapes';
+dirName = active_dataset;
 % Path la carpeta amb les funcions d'extracció de característiques (MFCC)
 path_feature_extraction = '.\Feature extraction';
 
@@ -19,14 +21,15 @@ path_server_functions = '.\serverFunctions';
 % Simulation parameters
 stWin = 100e-3;         % short-term window size (in seconds)
 stStep = 50e-3;         % short-term window step (in seconds)
-classLabels = {'Bus','Car','CityPark','Classroom','Countryside','Crowd','Factory','Library','Market_pedest','Office','Seaside','Stadium','Station','Traffic','Train'};
+%classLabels = {'Bus','Car','CityPark','Classroom','Countryside','Crowd','Factory','Library','Market_pedest','Office','Seaside','Stadium','Station','Traffic','Train'};
+classLabels = {'Complain', 'FireAlarm', 'BoilingWater', 'GlassBreak', 'Doorbell', 'Fall', 'CutleryFall', 'HeavyBreath', 'Rain', 'Help', 'RunningWater'};
 knn_K = 3;              % KNN parameter K value
 %--------------------------------------------------------------------------
 addpath(path_feature_extraction);
 addpath(path_server_functions);
 % Parametrize dirName WAV files, and obtain feature parameters in
 % mtFeatures cell array and filenames in FileNames cell array
-disp('Parametritzant corpus ...')
+disp('Parsing directory ...')
 [~, FileNames,stFeatures] =  featureExtractionDir(dirName, stWin, stStep, 0.5, 0.1, '',{'mfcc'});
 
 % Adaptem els atributs d'àudio a les especificacions de la llibreria de ML
@@ -49,17 +52,19 @@ nclass = length(classLabels);
 mapping = randperm(nExamples);
 features_rand = features(mapping,:);
 classIndex_rand = classIndex(mapping,:);
-%% Send Data
 
-% 
-% components = table(classIndex_rand, features_rand);
-% components_json = jsonencode(components);
-% 
-% %Send to JSON for evaluation of classification parameters in python
-% fid = fopen('components.json','wt');
-% fprintf(fid, components_json);
-% fclose(fid);
-% 
+
+%% Send to JSON file
+
+components = table(classIndex_rand, features_rand);
+components_json = jsonencode(components);
+
+%Send to JSON for evaluation of classification parameters in python
+fid = fopen('components.json','wt');
+fprintf(fid, components_json);
+fclose(fid);
+
+%% Send Data [Gerard]
 %Connect to python server
 sock = serverConnect(addr, port, sensorName);
 

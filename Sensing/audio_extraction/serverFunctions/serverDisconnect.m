@@ -10,6 +10,7 @@ resp = fscanf(sock);
 
 if (strcmp(resp, 'ok'))
     ok = 1;
+    fclose(sock);
 end
 
 end
