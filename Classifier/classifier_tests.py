@@ -74,7 +74,7 @@ PERCENTAGE_TESTING = 0.30
 PERCENTAGE_TOTAL = 1
 ALPHA = 5e-4
 
-with open('components.json') as f:
+with open('components_v2.json') as f:
     data = json.load(f)
 
 features_training = []
@@ -100,10 +100,10 @@ for third in range(2):
                 solvr = 'solvr'
                 ref = datetime.datetime.now()
 
-                ALPHA = 1e-4 * (math.pow(10, i))
+                ALPHA = 1e-5 * (math.pow(10, i))
 
                 if (third == 0): clf = MLPClassifier(solver='adam', alpha=ALPHA, hidden_layer_sizes=(25 * n1, 25 * n2), random_state=None, activation='logistic')
-                else: clf = MLPClassifier(solver='adam', alpha=ALPHA, hidden_layer_sizes=(25 * n1, 25 * n2, 50), random_state=None, activation='logistic')
+                else: clf = MLPClassifier(solver='adam', alpha=ALPHA, hidden_layer_sizes=(25 * n1, 25 * n2, 75), random_state=None, activation='logistic')
                 clf.fit(features_training, index_training)
 
                 timepassed4training = datetime.datetime.now() - ref
@@ -132,6 +132,18 @@ for third in range(2):
 BEST CONFIGURATION FOUND TO DATE:
 
 --------------------------------------------------
+
+<BEST IN NEW DATASET>
+--------------------------------------------------
+Alpha: 0.001
+Layer 1: 100 - Layer 2: 75
+Layer 3: True
+Accuracy: 86.18343195266273
+Training time: 27.017637
+Testing time: 0.483985
+--------------------------------------------------
+
+
 Alpha: 0.0001
 Solver: 'adam'
 Layer 1: 75 - Layer 2: 75

@@ -15,7 +15,7 @@ threadInfo = threadInfo()
 
 def main():
 
-    eventProcessor = threading.Thread(target = eventProcessing, args = (threadInfo, ))
+    eventProcessor = threading.Thread(target = eventProcessorMain, args = (threadInfo, ))
     eventProcessor.start()
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
