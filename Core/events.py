@@ -23,7 +23,7 @@ class threadInfo():
         return len(self.events)
 
 
-class event():
+class Event():
     __slots__ = ["time", "type", "location", "id"]
 
     def __init__ (self, type, location):
