@@ -68,7 +68,7 @@ fclose(fid);
 %Connect to python server
 sock = serverConnect(addr, port, sensorName);
 
-N_AUDIOS = 2;
+N_AUDIOS = 10;
 
 for i = 1:N_AUDIOS 
     %Send two audio features (13*2 MFCC components)
