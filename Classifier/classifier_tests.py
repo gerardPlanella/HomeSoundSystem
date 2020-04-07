@@ -115,7 +115,7 @@ for third in range(2):
                     index = index_testing[i]
 
                     result = clf.predict(np.array(feature).reshape(1, -1))
-                    if (result[0] == index): accuracy += 1;
+                    if (result[0] == index): accuracy += 1
 
                 timepassed = datetime.datetime.now() - ref
 

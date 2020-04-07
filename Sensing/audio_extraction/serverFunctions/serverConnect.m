@@ -1,17 +1,11 @@
-function [sock, ok] = serverConnect(addr, port, sensorName)
-%Connects to the python server and performs handshake
-ok = 0;
+function [sock] = serverConnect(addr, port, sensorName)
+%Connects to the python server
 sock = udp(addr, port);
 fopen(sock);
 
 flushinput(sock);
 
 fprintf(sock, sensorName);
-resp = fscanf(sock);
-
-if (strcmp(resp, 'ok'))
-    ok = 1;
-end
 
 end
 

@@ -26,6 +26,7 @@ start = time.time()
 n_packets = 0
 
 while True:
+    
     bytesAddressPair = s.recvfrom(1024)
     data = bytesAddressPair[0]
     address = bytesAddressPair[1]

@@ -24,12 +24,13 @@ class threadInfo():
 
 
 class Event():
-    __slots__ = ["time", "type", "location", "id"]
+    __slots__ = ["time", "type", "location", "id", "confidence"]
 
-    def __init__ (self, type, location):
+    def __init__ (self, event_type, location, confidence):
         self.time = datetime.now()
-        self.type = type
+        self.type = event_type
         self.location = location
+        self.confidence = confidence
 
     def time2str(self):
          return self.time.strftime("%H:%M:%S")
