@@ -31,7 +31,7 @@ addpath(path_server_functions);
 disp('Parsing directory ...')
 [~, FileNames,stFeatures] =  featureExtractionDir(dirName, stWin, stStep, 0.5, 0.1, '',{'mfcc'});
 
-% Adaptem els atributs d'�udio a les especificacions de la llibreria de ML
+% Adaptem els atributs d'audio a les especificacions de la llibreria de ML
 % --> features: atributs (N files = trames)x(L = 13 atributs MFCC)
 % --> classIndex: classe de cada trama en forma de n�mero enter (N files = trames)x1
 features = [];
