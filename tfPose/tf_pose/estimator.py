@@ -387,6 +387,7 @@ class TfPoseEstimator:
         # logs
         if self.tensor_image.dtype == tf.quint8:
             #logger.info('quantization mode enabled.')
+            pass
 
     def __del__(self):
         # self.persistent_sess.close()
@@ -558,7 +559,7 @@ class TfPoseEstimator:
         self.heatMat = heatMat_up[0]
         self.pafMat = pafMat_up[0]
         #logger.debug('inference- heatMat=%dx%d pafMat=%dx%d' % (
-            self.heatMat.shape[1], self.heatMat.shape[0], self.pafMat.shape[1], self.pafMat.shape[0]))
+           # self.heatMat.shape[1], self.heatMat.shape[0], self.pafMat.shape[1], self.pafMat.shape[0]))
 
         t = time.time()
         humans = PoseEstimator.estimate_paf(peaks, self.heatMat, self.pafMat)
