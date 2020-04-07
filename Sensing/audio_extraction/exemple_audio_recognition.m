@@ -11,11 +11,10 @@ active_dataset  = 'AudioDataset';
 
 % Directori a on tenim les dades etiquetades
 dirName = active_dataset;
-% Path la carpeta amb les funcions d'extracció de característiques (MFCC)
+% Path la carpeta amb les funcions d'extracciï¿½ de caracterï¿½stiques (MFCC)
 path_feature_extraction = '.\Feature extraction';
 
 path_server_functions = '.\serverFunctions';
-
 
 
 % Simulation parameters
@@ -32,9 +31,9 @@ addpath(path_server_functions);
 disp('Parsing directory ...')
 [~, FileNames,stFeatures] =  featureExtractionDir(dirName, stWin, stStep, 0.5, 0.1, '',{'mfcc'});
 
-% Adaptem els atributs d'àudio a les especificacions de la llibreria de ML
+% Adaptem els atributs d'ï¿½udio a les especificacions de la llibreria de ML
 % --> features: atributs (N files = trames)x(L = 13 atributs MFCC)
-% --> classIndex: classe de cada trama en forma de número enter (N files = trames)x1
+% --> classIndex: classe de cada trama en forma de nï¿½mero enter (N files = trames)x1
 features = [];
 classIndex = [];
 for n = 1:length(FileNames)
@@ -103,7 +102,7 @@ testCL = predict(knnModel,testDB);
 % Comparem les etiquetes reals (testGT) amb les obtingudes amb el
 % classificador (testCL)
 % --> Accuracy (% de reconeixement global)
-% --> F1 (mitja de les mitjanes harmòniques entre precisió i cobertura de
+% --> F1 (mitja de les mitjanes harmï¿½niques entre precisiï¿½ i cobertura de
 % cada classe)
 okPositions = find(testCL == testGT);
 koPositions = find(testCL ~= testGT);
@@ -141,6 +140,6 @@ disp(['   F1-macro = ',num2str(F1)]);
 disp(['   Accuracy = ',num2str(Accuracy)]);
 
 figure
-imagesc(CM);title('Matriu de confusió');colorbar;
+imagesc(CM);title('Matriu de confusiï¿½');colorbar;
 
 
