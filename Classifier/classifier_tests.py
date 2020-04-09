@@ -74,7 +74,7 @@ PERCENTAGE_TESTING = 0.30
 PERCENTAGE_TOTAL = 1
 ALPHA = 5e-4
 
-with open('components_v2.json') as f:
+with open('components_01_005.json') as f:
     data = json.load(f)
 
 features_training = []
@@ -93,6 +93,8 @@ for i in range(0, int(len(data) * PERCENTAGE_TOTAL)):
 
 ref = datetime.datetime.now()
 
+model = 0
+
 for third in range(2):
     for n1 in range(1, 5):
         for n2 in range(1, 5):
@@ -105,6 +107,9 @@ for third in range(2):
                 if (third == 0): clf = MLPClassifier(solver='adam', alpha=ALPHA, hidden_layer_sizes=(25 * n1, 25 * n2), random_state=None, activation='logistic')
                 else: clf = MLPClassifier(solver='adam', alpha=ALPHA, hidden_layer_sizes=(25 * n1, 25 * n2, 75), random_state=None, activation='logistic')
                 clf.fit(features_training, index_training)
+
+                if (ALPHA == 1e-3 and third == 1 and n1 == 4 and n2 == 3):
+                    model = clf
 
                 timepassed4training = datetime.datetime.now() - ref
                 ref = datetime.datetime.now()
@@ -126,6 +131,9 @@ for third in range(2):
                 print("Accuracy: " + str(accuracy/len(features_testing) * 100.0))
                 print("Training time: " + str(timepassed4training.total_seconds()))
                 print("Testing time: " + str(timepassed.total_seconds()))
+
+with open("model_100.pkl", 'wb') as file:
+    pickle.dump(model, file)
 
 
 """
