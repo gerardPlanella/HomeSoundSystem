@@ -1,7 +1,8 @@
 import socket
 import numpy as np
-from events import event, threadInfo
-from classifier import Classifier
+#from events import event, threadInfo
+import events
+import classifier as clsfy
 
 DEBUGGING = True
 
@@ -14,7 +15,7 @@ class Client:
     __slots__ = ['fifo', 'name']
 
     def __init__(self, name):
-       fifo = []
+       self.fifo = []
        self.name = name
 
 
@@ -28,7 +29,7 @@ def receiveString(socket):
     return str_data
 
 def getComponentsFromMessage(message):
-    str_data = str_data.rstrip()
+    str_data = message.rstrip()
     if str(str_data) == "disconnect":
          return [0, ""]
     component_str = str_data.split(' ')
@@ -40,29 +41,38 @@ def getComponentsFromMessage(message):
 
 def runDS(threadInfo, client):
     ds_run = True
-    classifier = Classifier()
-    
+    classifier = clsfy.Classifier()
+
     if (DEBUGGING): print("Sensor name: " + client.name + " \n")
 
     while (threadInfo.running and ds_run):
         if len(client.fifo) > 0:
             component = client.fifo.pop(0)
+            #print("Message: " + str(component))
+
             [ok, component] = getComponentsFromMessage(component)
+            #print("Components: " + str(component))
+
             if (not ok):
                 if (DEBUGGING): print(client.name + " Client disconnected\n")
                 ds_run = False
             else:
-                if (DEBUGGING): print("Data received: " + str(component) + "\n")
+                #if (DEBUGGING): print("Data received: " + str(component) + "\n")
                 if (len(component) != NUM_COMPONENTS and DEBUGGING): print("Incorrect components received")
-                classifyComponents(threadInfo, component, client.name)
+                classifyComponents(threadInfo, component, client.name, classifier)
 
-def classifyComponents(threadInfo, components, name):
-    
-    [event, confidence] = classifier.predict(components)
-    if(event_index != ""):
-        event = Event(event, name, confidence)
+def classifyComponents(threadInfo, components, name, classifier):
+
+    [event, event_index, confidence] = classifier.predict(components)
+    if(event != ""):
+        event = events.Event(event, name, confidence)
         threadInfo.addEvent(event)
+
+        print("-"*50)
+        print(event.type)
+        #print(event.time)
+        #print(event.location)
+        print(event.confidence)
         return 1
     else:
         return 0
-

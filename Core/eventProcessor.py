@@ -2,7 +2,7 @@ import db
 import socket
 import time
 
-HOST = '127.0.0.1'  # Standard loopback interface address (localhost)
+HOST = '25.120.131.106'  # Standard loopback interface address (localhost)
 PORT = 8001         # Port to listen on (non-privileged ports are > 1023)
 
 def sendString(socket, msg):
@@ -20,7 +20,9 @@ def eventProcessorMain(threadInfo):
     try:
         client, addr = sock.accept()
         print_lock.acquire()
-        print("[ETP] Connected to Robot in @ :", addr[0])
+        print("[ETP] Connected to Robot in @ :" + addr[0])
+    except:
+        print("error connecting to robot")
 
     database = db.HomeSoundSystemDB()
 

@@ -6,7 +6,7 @@ import pickle
 
 MODEL_PATH = "model.pkl"
 
-CERTAINTY_DIFFERENCE_THRESHOLD = 0.6
+CERTAINTY_DIFFERENCE_THRESHOLD = 0.9
 
 classLabels = ['Complain', 'FireAlarm', 'BoilingWater', 'GlassBreak', 'Doorbell', 'Fall', 'CutleryFall', 'HeavyBreath', 'Rain', 'Help', 'RunningWater']
 
@@ -21,29 +21,20 @@ class Classifier():
             ok = True
         except:
             ok = False
-    
+
     def predict(self, components):
-        result = np.array(model.predict_proba(np.array(components).reshape(1, -1))[0])
-        
+        result = np.array(self.model.predict_proba(np.array(components).reshape(1, -1))[0])
+
         index = np.argmax(result)
         confidence = result[index]
 
         result = np.delete(result, index)
         confidence_2 = max(result)
 
-        if(confidence - confidence_2 < CERTAINTY_DIFFERENCE_THRESHOLD):
+        if((confidence - confidence_2) < CERTAINTY_DIFFERENCE_THRESHOLD):
             index = -1
             event = ""
         else:
             event = classLabels[index]
 
-            
-        return[event, confidence]
-
-
-        
-
-
-
-
-         
+        return[event, index, confidence]
