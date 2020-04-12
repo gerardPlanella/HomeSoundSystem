@@ -66,7 +66,7 @@ while (curSample <= numOfSamples) % while the end of file has not been reahed
        
     % STEP 2: mid-term feature extraction:
     [mtFeatures, st] = mtFeatureExtraction(...
-        Features, mtWinRatio, mtStepRatio, featureStatistics);
+       Features, mtWinRatio, mtStepRatio, featureStatistics);
     
     for (i=1:length(st)) 
         stFeaturesPerSegment{end+1} = st{i}; 

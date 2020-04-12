@@ -1,12 +1,13 @@
 
 % Classifier Core IP and port
-addr = '127.0.0.1';
+addr = '25.120.131.106';
 port = 8000;
 sensorName = 'kitchen';
 
 % If this .m is moved, change the line below. It should point to the Feature
 % extraction folder.
 addpath('./Feature extraction/');
+addpath('./serverFunctions/');
 
 % Variables
 Fs = 44100 ;        % Sampling frequency
@@ -29,8 +30,6 @@ mtStepRatio = round(mtStep / stStep);
 %Connect to the server
 sock = serverConnect(addr, port, sensorName);
 
-sendErrorCounter = 0;
-
 while true
     
     % Record [Gaëtan & Adria]
@@ -48,29 +47,17 @@ while true
     % STEP 2: mid-term feature extraction:
     %[mtFeatures, st] = mtFeatureExtraction(stFeatures , mtWinRatio, mtStepRatio, '');
     
-    size = size(stFeatures, 2);
+    len = size(stFeatures, 2);
     %Send audio features (MFCC components)
-    for i = 1:size
+    for i = 1:len
         
         %TESTING AREA (IGNORE)
-        %components = num2str(stFeatures(:,i), "%f");
-        %fprintf('Components extracted at %s: \n%s\n',datestr(now,'HH:MM:SS.FFF'),components);
+        %components = num2str(stFeatures(:,i)', "%f");
+        %disp(components)
         %result = 1;
         %END OF TESTING AREA
         
-        result = serverSendComponents(sock, stFeatures(:,i)); 
-        %Check for errors.
-        if (result == 0)
-            
-            fprintf('Error sending component \n');
-            %If there are 10 errors in a row, exit.
-            sendErrorCounter = sendErrorCounter + 1;
-            if sendErrorCounter >= 10
-                break;
-            end
-        else
-            sendErrorCounter = 0;
-        end
+        serverSendComponents(sock, stFeatures(:,i)'); 
     end
 end
 

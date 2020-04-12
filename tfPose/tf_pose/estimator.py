@@ -244,6 +244,7 @@ class Human:
 
 class BodyPart:
     """
+    uidx : Human id
     part_idx : part index(eg. 0 for nose)
     x, y: coordinate of body part
     score : confidence score
@@ -256,11 +257,14 @@ class BodyPart:
         self.x, self.y = x, y
         self.score = score
 
+    def get_part_id(self):
+        return self.part_idx
+
     def get_part_name(self):
         return CocoPart(self.part_idx)
 
     def __str__(self):
-        return 'BodyPart:%d-(%.2f, %.2f) score=%.2f' % (self.part_idx, self.x, self.y, self.score)
+        return 'BodyPart: %d - (%.2f, %.2f) score = %.2f\n' % (self.part_idx, self.x, self.y, self.score)
 
     def __repr__(self):
         return self.__str__()
@@ -305,9 +309,12 @@ class TfPoseEstimator:
 
     def __init__(self, graph_path, target_size=(320, 240), tf_config=None, trt_bool=False):
         self.target_size = target_size
+        
+        #Magia del adria
+        tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 
         # load graph
-       # logger.info('loading graph from %s(default size=%dx%d)' % (graph_path, target_size[0], target_size[1]))
+        #logger.info('loading graph from %s(default size=%dx%d)' % (graph_path, target_size[0], target_size[1]))
         with tf.gfile.GFile(graph_path, 'rb') as f:
             graph_def = tf.GraphDef()
             graph_def.ParseFromString(f.read())
@@ -326,14 +333,14 @@ class TfPoseEstimator:
                 maximum_cached_engines=int(1e3),
                 #use_calibration=True
             )
-
+ 
         self.graph = tf.get_default_graph()
         tf.import_graph_def(graph_def, name='TfPoseEstimator')
         self.persistent_sess = tf.Session(graph=self.graph, config=tf_config)
 
-        for ts in [n.name for n in tf.get_default_graph().as_graph_def().node]:
+        """for ts in [n.name for n in tf.get_default_graph().as_graph_def().node]:
             print(ts)
-
+        """
         self.tensor_image = self.graph.get_tensor_by_name('TfPoseEstimator/image:0')
         self.tensor_output = self.graph.get_tensor_by_name('TfPoseEstimator/Openpose/concat_stage7:0')
         self.tensor_heatMat = self.tensor_output[:, :, :, :19]

@@ -294,6 +294,7 @@ def mobilenet(inputs,
               scope='Mobilenet',
               base_only=False,
               **mobilenet_args):
+  
   """Mobilenet model for classification, supports both V1 and V2.
   Note: default mode is inference, use mobilenet.training_scope to create
   training network.
@@ -366,7 +367,9 @@ def mobilenet(inputs,
   return logits, end_points
 
 
-def global_pool(input_tensor, pool_op=tf.nn.avg_pool):
+def global_pool(input_tensor, pool_op=tf.nn.avg_pool2d):
+
+ 
   """Applies avg pool to produce 1x1 output.
   NOTE: This function is funcitonally equivalenet to reduce_mean, but it has
   baked in average pool which has better support across hardware.
