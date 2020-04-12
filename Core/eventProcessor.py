@@ -19,10 +19,11 @@ def eventProcessorMain(threadInfo):
 
     try:
         client, addr = sock.accept()
-        print_lock.acquire()
+        #print_lock.acquire()
         print("[ETP] Connected to Robot in @ :" + addr[0])
-    except:
+    except Exception as e:
         print("error connecting to robot")
+        print(e)
 
     database = db.HomeSoundSystemDB()
 
@@ -35,7 +36,7 @@ def eventProcessorMain(threadInfo):
 
         event = threadInfo.getEvent()
 
-        print("Process data??")
+        print("New event: " + event.type)
 
         robotHasToBeNotified = True
         if (robotHasToBeNotified):
