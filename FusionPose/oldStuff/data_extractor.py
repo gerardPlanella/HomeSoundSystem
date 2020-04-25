@@ -3,6 +3,8 @@
 # 0 -> usuari al terra
 # 1 -> usuari de peu
 
+from collections import Counter
+
 import random 
 from sklearn.neural_network import MLPClassifier
 
@@ -14,7 +16,6 @@ import numpy as np
 import math
 
 PERCENTAGE_TESTING = 0.30
-ALPHA = 5e-4
 
 def getAsList(fileName):
     
@@ -28,7 +29,7 @@ def getAsList(fileName):
             line_count+=1
             parts = line.split(";")
             poses = []
-            if(fileName == "stand.txt" and line_count > 100): return A
+            #if(fileName == "./old_datasets/stand_adria_first_dataset.dataset" and line_count > 100): return A
             i = 0
             for p in parts:
                 chunks = p.split(" ")
@@ -44,7 +45,7 @@ def getAsList(fileName):
 
 if __name__ == '__main__':
     
-    A = getAsList("floor.txt")
+    A = getAsList("./old_datasets/stand_adria_first_dataset.dataset")
     
     B = []
     for e in A:
@@ -53,12 +54,14 @@ if __name__ == '__main__':
     A_o = A.copy()
     B_o = B.copy()
     
-    C = getAsList("stand.txt")
+    C = getAsList("./old_datasets/floor_adria_first_dataset.dataset")
     
     D = []
     for e in C:
         D.append(1)
 
+
+    print("From files, got: B D" + str(len(B)) + " " + str(len(D)))
     #Concatenation
     A += C
     B += D
@@ -103,6 +106,12 @@ if __name__ == '__main__':
 
     ALPHA = 1e-5
 
+    print("Train test: " + str(len(a_train)) + " "+ str(len(a_test)) + " Total: " +str(len(a_train)+len(a_test)))
+
+    
+    for o in a_test:
+        print("A_test pose has " + str(len(o)))
+
     clf = MLPClassifier(solver='adam', alpha=ALPHA, hidden_layer_sizes=(75, 25, 75), random_state=0, activation='logistic', max_iter=300)
     clf.fit(a_train, B_train)
 
@@ -112,13 +121,17 @@ if __name__ == '__main__':
     accuracy = 0
     for i in range(len(a_test)):
         feature = a_test[i]
-        print("Shape is " + str(np.array(feature).shape)+ "\n" + str(np.array(feature)) + "\n" + str(np.array(feature).reshape(1, -1)))
+        
+        
         index = B_test[i]
 
         result = clf.predict(np.array(feature).reshape(1, -1))
 
         if (result[0] == index): accuracy += 1
-
+    
+    pepe = Counter(B_test)
+    print("COUNT:" + str(pepe))
+    
     timepassed = datetime.datetime.now() - ref
 
     print("-"*50)
@@ -129,4 +142,5 @@ if __name__ == '__main__':
     print("Training time: " + str(timepassed4training.total_seconds()))
     print("Testing time: " + str(timepassed.total_seconds()))
 
-    dump(clf, 'model.joblib') 
+    #dump(clf, 'model.joblib') 
+    
