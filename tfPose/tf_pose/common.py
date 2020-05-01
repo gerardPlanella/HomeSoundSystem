@@ -1,5 +1,4 @@
 from enum import Enum
-
 import tensorflow as tf
 import cv2
 
@@ -29,6 +28,27 @@ class CocoPart(Enum):
     LEye = 15
     REar = 16
     LEar = 17
+    Background = 18
+
+class CocoPartAdria(Enum):
+    Nas = 0
+    Coll = 1
+    Hombro_dret = 2
+    Colze_dret = 3
+    Muñeca_dret = 4
+    Hombro_esquerra = 5
+    Colze_esquerra = 6
+    Muñeca_esquerra = 7
+    Cadera_dret = 8
+    Genois_dret = 9
+    Talo_dret = 10
+    Cadera_esquerra = 11
+    Genois_esquerra = 12
+    Talo_esquerra = 13
+    Ull_dret = 14
+    Ull_esquerra = 15
+    Orella_dret = 16
+    Orella_esquerra = 17
     Background = 18
 
 

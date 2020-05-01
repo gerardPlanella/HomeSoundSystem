@@ -1,0 +1,54 @@
+FULL_BODY:
+    ALPHA: 0.001
+    Layer 1: 100
+    Layer 2: 0
+    Layer 3: 0
+    Accuracy: 100
+FULL_BODY_NO_EARS:
+    ALPHA: 1e-5
+    Layer 1: 25
+    Layer 2: 0
+    Layer 3: 0
+    Accuracy: 100
+LEFT_SIDE:
+    ALPHA: 0.001
+    Layer 1: 75
+    Layer 2: 0
+    Layer 3: 0
+    Accuracy: 92.98245614035088
+RIGHT_SIDE:
+    ALPHA: 0.0001
+    Layer 1: 75
+    Layer 2: 0
+    Layer 3: 0
+    Accuracy: 95.42483660130719
+TORSO:
+    ALPHA: 0.0001
+    Layer 1: 100
+    Layer 2: 0
+    Layer 3: 0
+    Accuracy: 96.36363636363636
+FULL_TORSO_LEGS:
+    ALPHA: 0.0001
+    Layer 1: 100
+    Layer 2: 0
+    Layer 3: 0
+    Accuracy: 97.22222222222221
+LEFT_TORSO_LEGS:
+    ALPHA: 1e-05
+    Layer 1: 25
+    Layer 2: 0
+    Layer 3: 0
+    Accuracy: 98.1981981981982
+RIGHT_TORSO_LEGS:
+    ALPHA: 1e-05
+    Layer 1: 75
+    Layer 2: 0
+    Layer 3: 0
+    Accuracy: 91.9047619047619
+TEST_ADRIA:
+    ALPHA: 1e-05
+    Layer 1: 50
+    Layer 2: 0
+    Layer 3: 0
+    Accuracy: 100

@@ -111,4 +111,8 @@ for i=1:numOfFrames % for each frame
     frameFFTPrev = frameFFT;
 end
 %Features(35, :) = medfilt1(Features(35, :), 3);
-Features = Features(1:(n-1),:);
+if exist('n','var')
+    Features = Features(1:(n-1),:);
+else
+    disp('HAHA');
+end

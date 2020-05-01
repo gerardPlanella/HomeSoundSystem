@@ -101,7 +101,7 @@ best_accuracy = 0
 for third in range(2):
     for n1 in range(1, 5):
         for n2 in range(1, 5):
-            for i in range(3):
+            for i in range(3): 
                 solvr = 'solvr'
                 ref = datetime.datetime.now()
 
