@@ -7,6 +7,7 @@ import random
 import datetime
 import numpy as np
 import math
+import pickle
 """
 ######      CODE FOR KNN        #######
 
@@ -74,7 +75,7 @@ PERCENTAGE_TESTING = 0.30
 PERCENTAGE_TOTAL = 1
 ALPHA = 5e-4
 
-with open('components_01_005.json') as f:
+with open('componentsv6.json') as f:
     data = json.load(f)
 
 features_training = []
@@ -94,6 +95,8 @@ for i in range(0, int(len(data) * PERCENTAGE_TOTAL)):
 ref = datetime.datetime.now()
 
 model = 0
+best_model = model
+best_accuracy = 0
 
 for third in range(2):
     for n1 in range(1, 5):
@@ -132,8 +135,13 @@ for third in range(2):
                 print("Training time: " + str(timepassed4training.total_seconds()))
                 print("Testing time: " + str(timepassed.total_seconds()))
 
-with open("model_100.pkl", 'wb') as file:
-    pickle.dump(model, file)
+                if (accuracy > best_accuracy):
+                    best_accuracy = accuracy
+                    best_model = model
+
+path = "modelv6.pkl"
+with open(path, 'wb') as file:
+    pickle.dump(best_model, file)
 
 
 """

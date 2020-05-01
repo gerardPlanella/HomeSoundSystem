@@ -11,6 +11,10 @@ NUM_COMPONENTS = 13
 OK = "ok"
 KO = "ko"
 
+INIT_VALUE = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+summary = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+burst = 0
+
 class Client:
     __slots__ = ['fifo', 'name']
 
@@ -44,6 +48,8 @@ def runDS(threadInfo, client):
     classifier = clsfy.Classifier()
 
     if (DEBUGGING): print("Sensor name: " + client.name + " \n")
+    burst = 0
+    summary = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
     while (threadInfo.running and ds_run):
         if len(client.fifo) > 0:
@@ -54,7 +60,8 @@ def runDS(threadInfo, client):
             #print("Components: " + str(component))
 
             if (not ok):
-                if (DEBUGGING): print(client.name + " Client disconnected\n")
+                #if (DEBUGGING):
+                print(client.name + " Client disconnected\n")
                 ds_run = False
             else:
                 #if (DEBUGGING): print("Data received: " + str(component) + "\n")
@@ -62,17 +69,30 @@ def runDS(threadInfo, client):
                 classifyComponents(threadInfo, component, client.name, classifier)
 
 def classifyComponents(threadInfo, components, name, classifier):
-
-    [event, event_index, confidence] = classifier.predict(components)
-    if(event != ""):
-        event = events.Event(event, name, confidence)
+    global burst
+    classLabels = ['Complain', 'FireAlarm', 'BoilingWater', 'GlassBreak', 'Doorbell', 'Fall', 'CutleryFall', 'HeavyBreath', 'Rain', 'Help', 'RunningWater', 'Silence']
+    [event_name, event_index, confidence] = classifier.predict(components)
+    if(event_name != ""):
+        event = events.Event(event_index, name, confidence)
         threadInfo.addEvent(event)
 
-        print("-"*50)
-        print(event.type)
-        #print(event.time)
-        #print(event.location)
-        print(event.confidence)
+        summary[event_index] += 1
+        burst += 1
+
+        if False:
+            print("-"*50)
+            print(event_name)
+            print(event.time)
+            #print(event.location)
+            print(event.confidence)
+
+        if (burst == 30):
+            burst = 0
+            print("-"*50)
+            for i in range(len(summary)):
+                print(classLabels[i] + ": " + str(summary[i]))
+                summary[i] = 0
+
         return 1
     else:
         return 0

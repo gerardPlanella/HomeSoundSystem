@@ -4,12 +4,12 @@ import numpy as np
 import math
 import pickle
 
-MODEL_PATH = "model.pkl"
+MODEL_PATH = "modelv6.pkl"
 
-CERTAINTY_DIFFERENCE_THRESHOLD = 0.9
+CERTAINTY_DIFFERENCE_THRESHOLD = 0.5
 
-classLabels = ['Complain', 'FireAlarm', 'BoilingWater', 'GlassBreak', 'Doorbell', 'Fall', 'CutleryFall', 'HeavyBreath', 'Rain', 'Help', 'RunningWater']
-
+classLabels = ['Complain', 'FireAlarm', 'BoilingWater', 'GlassBreak', 'Doorbell', 'Fall', 'CutleryFall', 'HeavyBreath', 'Rain', 'Help', 'RunningWater', 'Silence']
+#classLabels = ['Bus','Car','CityPark','Classroom','Countryside','Crowd','Factory','Library','Market_pedest','Office','Seaside','Stadium','Station','Traffic','Train']
 
 class Classifier():
     __slots__= ['model', 'ok']
@@ -34,6 +34,7 @@ class Classifier():
         if((confidence - confidence_2) < CERTAINTY_DIFFERENCE_THRESHOLD):
             index = -1
             event = ""
+            print(".", end='')
         else:
             event = classLabels[index]
 

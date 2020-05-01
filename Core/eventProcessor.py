@@ -1,6 +1,8 @@
 import db
 import socket
 import time
+import events
+import datetime
 
 HOST = '25.120.131.106'  # Standard loopback interface address (localhost)
 PORT = 8001         # Port to listen on (non-privileged ports are > 1023)
@@ -27,6 +29,7 @@ def eventProcessorMain(threadInfo):
 
     database = db.HomeSoundSystemDB()
 
+
     while (threadInfo.running):
 
         while (threadInfo.nEvents() == 0 or not threadInfo.running):
@@ -36,12 +39,22 @@ def eventProcessorMain(threadInfo):
 
         event = threadInfo.getEvent()
 
-        print("New event: " + event.type)
+        #print("New event: " + str(event.type))
 
         robotHasToBeNotified = True
         if (robotHasToBeNotified):
-            sendString(sock, event.location + "%" + str(event.type) + "%" + str(event.time))
+            sendString(client, event.location + "%" + str(event.type) + "%" + str(event.time))
 
         database.addLog(event)
+    """
+    while (threadInfo.running):
 
-    closeDB()
+        time.sleep(5)
+        print("-"*50 + "\nnew packet")
+
+        event = events.Event(1, "garden", .9842069)
+        #sendString(client, event.location + "%" + str(event.type) + "%" + str(event.time) + "%" + str(event.confidence))
+        database.addLog(event)
+    """
+
+    dtabase.closeDB()

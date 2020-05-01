@@ -36,10 +36,10 @@ def main():
             #print("Paquet received")
 
             if (address in client_streams):
-                client_streams[address].fifo.append(data.decode('utf-8'))
+                client_streams[address].fifo.append(data.decode('ascii'))
             else:
                 #TODO: Remove OK and KO and Disconnect from Matlab Client
-                client = dedicatedServer.Client(data.decode('utf-8'))
+                client = dedicatedServer.Client(data.decode('ascii'))
                 client_streams.update({address : client})
 
                 #print_lock.acquire()
