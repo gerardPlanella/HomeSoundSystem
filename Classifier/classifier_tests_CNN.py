@@ -18,7 +18,7 @@ from keras.utils import np_utils
 from sklearn import metrics
 
 TOTAL_K_TO_TEST = 10
-PERCENTAGE_TESTING = 0.30
+PERCENTAGE_TESTING = 0.15
 PERCENTAGE_TOTAL = 1
 ALPHA = 5e-4
 MAX_VALUE = 1.0
@@ -44,55 +44,78 @@ def normalize(data):
 
     return data
 
-with open('componentsv6.json') as f:
+with open('spectrograms.json') as f:
     data = json.load(f)
 
-features_training = []
+spectrograms_training = []
 index_training = []
 
-features_testing = []
+spectrograms_testing = []
 index_testing = []
 
+NUM_OF_SAMPLES = 40
+NUM_OF_COMPONENTS = 13
+
+random.shuffle(data)
+
 for i in range(0, int(len(data) * PERCENTAGE_TOTAL)):
+    stream = data[i]["spectrograms"]
+    spectrogram = np.array(stream).reshape(NUM_OF_SAMPLES, NUM_OF_COMPONENTS)
+
+    index = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    index[data[i]["classIndex"]] = 1
+    index = np.array(index).reshape(12)
+
     if (i < int(len(data) * PERCENTAGE_TESTING * PERCENTAGE_TOTAL)):
-        features_testing.append(normalize(data[i]["features_rand"]))
-        index_testing.append(data[i]["classIndex_rand"])
+        spectrograms_testing.append(spectrogram)
+        index_testing.append(index)
     else:
-        features_training.append(normalize(data[i]["features_rand"]))
-        index_training.append(data[i]["classIndex_rand"])
+        spectrograms_training.append(spectrogram)
+        index_training.append(index)
 
 ref = datetime.datetime.now()
+
+ # 13 features - 25 components
 
 model = 0
 best_model = model
 best_accuracy = 0
 
-num_rows_tr = len(features_training)
-num_rows_te = len(features_training)
-num_columns = len(features_training[0])
+num_rows = len(spectrograms_training[0])
+num_columns = len(spectrograms_training[0][0])
 num_channels = 1
 num_labels = len(classLabels)
 
-#features_training = np.array(features_training).reshape(np.array(features_training).shape[0], num_rows_tr, num_columns, num_channels)
-#features_testing = np.array(features_testing).reshape(np.array(features_testing).shape[0], num_rows_te, num_columns, num_channels)
+spectrograms_training = np.array(spectrograms_training).reshape(np.array(spectrograms_training).shape[0], num_rows, num_columns, num_channels)
+spectrograms_testing = np.array(spectrograms_testing).reshape(np.array(spectrograms_testing).shape[0], num_rows, num_columns, num_channels)
 
+index_training = np.array(index_training).reshape(np.array(spectrograms_training).shape[0], num_labels)
+index_testing = np.array(index_testing).reshape(np.array(spectrograms_testing).shape[0], num_labels)
+
+print("Num rows: " + str(num_rows))
+print("Num columns: " + str(num_columns))
+print("Num channels: " + str(num_channels))
+
+# Revisar la configuració de les capes de Pooling
+
+# Construct model
 model = Sequential()
-model.add(Conv1D(filters=16, kernel_size=2, input_shape=(1, 13), activation='relu'))
-model.add(MaxPooling1D(pool_size=2))
+model.add(Conv2D(filters=16, kernel_size=2, input_shape=(num_rows, num_columns, num_channels), activation='relu'))
+model.add(MaxPooling2D(pool_size=2))
 model.add(Dropout(0.2))
 
-model.add(Conv1D(filters=32, kernel_size=2, activation='relu'))
-model.add(MaxPooling1D(pool_size=1))
+model.add(Conv2D(filters=32, kernel_size=2, activation='relu'))
+model.add(MaxPooling2D(pool_size=1))
 model.add(Dropout(0.2))
 
-model.add(Conv1D(filters=64, kernel_size=2, activation='relu'))
-model.add(MaxPooling1D(pool_size=2))
+model.add(Conv2D(filters=64, kernel_size=2, activation='relu'))
+model.add(MaxPooling2D(pool_size=1))
 model.add(Dropout(0.2))
 
-model.add(Conv1D(filters=128, kernel_size=2, activation='relu'))
-model.add(MaxPooling1D(pool_size=1))
+model.add(Conv2D(filters=128, kernel_size=2, activation='relu'))
+model.add(MaxPooling2D(pool_size=2))
 model.add(Dropout(0.2))
-model.add(GlobalAveragePooling1D())
+model.add(GlobalAveragePooling2D())
 
 model.add(Dense(num_labels, activation='softmax'))
 
@@ -102,99 +125,42 @@ model.compile(loss='categorical_crossentropy', metrics=['accuracy'], optimizer='
 # Display model architecture summary
 model.summary()
 
-features_testing = np.array(features_testing).reshape(len(features_testing), 13, 1)
-index_testing = np.array(index_testing).reshape(len(index_testing))
-
-indexaux = []
-for i in range(len(index_testing)):
-    indexaux.append([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
-    indexaux[i][index_testing[i]] = 1
-index_testing = indexaux
-#index_testing = np.array(index_testing).reshape(len(index_testing))
-
 print(np.array(index_testing).shape)
-print(np.array(index_testing)[0].shape)
 
 # Calculate pre-training accuracy
-#score = model.evaluate(np.array(features_testing).reshape(len(features_testing), len(features_testing[0])), np.array(index_testing), verbose=1)
-score = model.evaluate(np.array(features_testing), np.array(index_testing)[0], verbose=1)
+score = model.evaluate(spectrograms_testing, index_testing, verbose=1)
 accuracy = 100*score[1]
 
 print("Pre-training accuracy: %.4f%%" % accuracy)
 
-
-"""
 from keras.callbacks import ModelCheckpoint
 from datetime import datetime
 
 num_epochs = 72
 num_batch_size = 256
 
-checkpointer = ModelCheckpoint(filepath='weights.best.basic_cnn.hdf5', verbose=1, save_best_only=True)
+checkpointer = ModelCheckpoint(filepath='modelCNN.hdf5',
+                               verbose=1, save_best_only=True)
 start = datetime.now()
 
-model.fit(features_training, index_training, batch_size=num_batch_size, epochs=num_epochs, validation_data=(features_testing, index_testing), callbacks=[checkpointer], verbose=1)
+model.fit(spectrograms_training, index_training, batch_size=num_batch_size, epochs=num_epochs, validation_data=(spectrograms_testing, index_testing), callbacks=[checkpointer], verbose=1)
 
 duration = datetime.now() - start
 print("Training completed in time: ", duration)
-"""
 
-"""
-for alpha_factor in range(10):
-    for n1 in range(1, 10):
-        for n2 in range(0, 10):
-            for n3 in range(0, 10):
-                solvr = 'solvr'
-                ref = datetime.datetime.now()
+# Evaluating the model on the training and testing set
+score = model.evaluate(spectrograms_training, index_training, verbose=0)
+print("Training Accuracy: ", score[1])
 
-                i = alpha_factor
-                exp = alpha_factor/2
-                ALPHA = 1e-6 * (math.pow(10, exp)) * (1 + 4*(i%2))
+score = model.evaluate(spectrograms_testing, index_testing, verbose=0)
+print("Testing Accuracy: ", score[1])
 
-                if (n2 != 0 and n3 != 0): model = MLPClassifier(solver='adam', alpha=ALPHA, hidden_layer_sizes=(20 * n1, 20 * n2, 20 * n3), random_state=None, activation='logistic')
-                elif (n2 == 0 and n3 != 0): model = MLPClassifier(solver='adam', alpha=ALPHA, hidden_layer_sizes=(20 * n1, 20 * n3), random_state=None, activation='logistic')
-                elif (n2 != 0 and n3 == 0): model = MLPClassifier(solver='adam', alpha=ALPHA, hidden_layer_sizes=(20 * n1, 20 * n2), random_state=None, activation='logistic')
-                elif (n2 == 0 and n3 == 0): model = MLPClassifier(solver='adam', alpha=ALPHA, hidden_layer_sizes=(20 * n1), random_state=None, activation='logistic')
-                model.fit(features_training, index_training)
+model_json = model.to_json()
+with open("model_CNN.json", "w") as json_file:
+    json_file.write(model_json)
 
-                timepassed4training = datetime.datetime.now() - ref
-                ref = datetime.datetime.now()
-
-                accuracy_true = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-                n_total = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-                accuracy = 0
-                for i in range(len(features_testing)):
-                    feature = features_testing[i]
-                    index = index_testing[i]
-
-                    result = model.predict(np.array(feature).reshape(1, -1))
-                    n_total[result[0]] += 1
-                    if (result[0] == index):
-                        accuracy_true[result[0]] += 1
-                        accuracy += 1
-
-                timepassed = datetime.datetime.now() - ref
-                if (accuracy > best_accuracy):
-                    best_accuracy = accuracy
-                    best_model = model
-
-                    print("Alpha: " + str(ALPHA))
-                    print("Layer 1: " + str(n1*20) + " - Layer 2: " + str(n2*20) + " - Layer 3: " + str(n3*20))
-
-                    print("Total accuracy: " + str(accuracy/len(features_testing) * 100.0))
-                    print("Accuracies: ")
-                    for i in range(len(accuracy_true)):
-                        if (i == 5 or i == 8 or i == 9): print("\t" + classLabels[i] + ": \t\t" + str(accuracy_true[i]/n_total[i]*100.0))
-                        else: print("\t" + classLabels[i] + ": \t" + str(accuracy_true[i]/n_total[i]*100.0))
-
-                    print("Training time: " + str(timepassed4training.total_seconds()))
-                    print("Testing time: " + str(timepassed.total_seconds()))
-                    print("-"*50)
-                else:
-                    print("Training time for failed configuration: " + str(timepassed4training.total_seconds()))
-
-
-path = "modelv7.pkl"
-with open(path, 'wb') as file:
-    pickle.dump(best_model, file)
-"""
+for i in range(len(spectrograms_testing)):
+    result = model.predict(spectrograms_testing[i])
+    print("-"*50)
+    print("Result:   " + str(result.reshape(1, result.shape[0], result.shape[1], result.shape[2])))
+    print("Original: " + str(index_testing[i]))
