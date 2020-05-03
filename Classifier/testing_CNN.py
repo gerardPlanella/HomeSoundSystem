@@ -16,8 +16,8 @@ from keras.optimizers import Adam
 from keras.utils import np_utils
 from sklearn import metrics
 
-with open('spectrograms.json') as f:
-    data = json.load(f)
+with open('spectrograms_testing.json') as f:
+    data_testing = json.load(f)
 
 spectrograms = []
 index = []
@@ -25,14 +25,14 @@ index = []
 NUM_OF_SAMPLES = 40
 NUM_OF_COMPONENTS = 13
 
-random.shuffle(data)
+random.shuffle(data_testing)
 
-for i in range(0, int(len(data))):
-    stream = data[i]["spectrograms"]
+for i in range(0, int(len(data_testing))):
+    stream = data_testing[i]["spectrograms_testing"]
     spectrogram = np.array(stream).reshape(NUM_OF_SAMPLES, NUM_OF_COMPONENTS)
 
     indexaux = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    indexaux[data[i]["classIndex"]] = 1
+    indexaux[data_testing[i]["classIndex_testing"]] = 1
     indexaux = np.array(indexaux).reshape(12)
 
     spectrograms.append(spectrogram)
@@ -53,34 +53,7 @@ index = np.array(index).reshape(len(index), 12)
 values = []
 
 model = load_trained_model('model_CNN.json', 'modelCNN.hdf5')
-"""
-for i in range(len(spectrograms)):
 
-    result = model.predict(spectrograms[i].reshape(1, 40, 13, 1))[0]
-    maxval = result[np.argmax(result)]
-
-    val2 = 0
-    for v in result:
-        if (val2 < v and v != maxval):
-            val2 = v
-
-    isCorrect = np.argmax(result) == np.argmax(index[i])
-
-    if (not isCorrect):
-        values.append(maxval)
-
-        print("-"*50)
-        #print("Result:   " + str(result))
-        #print("Original: " + str(index[i]))
-        print("Confidence: " + str(maxval * 100.0))
-        print("Correct: " + str(isCorrect))
-        print("Difference: " + str(float(maxval) - float(val2)))
-
-values.sort()
-ACCEPTANCE = 1
-
-print(values[int(len(values)*ACCEPTANCE)-1])
-"""
 num_iterations = 30
 
 threshold = 0.9
@@ -134,4 +107,5 @@ while num_iterations != 0:
     print("threshold: %.3f" % threshold)
     print("Ratio: " + str(ratio))
     print("Correct / Incorrect: " + str(int(ratioaux)) + "/" + str(int(total - ratioaux)))
+    print("Failure: %.2f" % ((1 - ratioaux/total)*100.0))
     num_iterations -= 1

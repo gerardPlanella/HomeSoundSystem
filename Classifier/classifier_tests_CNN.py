@@ -15,6 +15,8 @@ from keras.layers import Convolution2D, Conv2D, MaxPooling2D, GlobalAveragePooli
 from keras.layers import Convolution1D, Conv1D, MaxPooling1D, GlobalAveragePooling1D
 from keras.optimizers import Adam
 from keras.utils import np_utils
+from keras.callbacks import ModelCheckpoint
+from datetime import datetime
 from sklearn import metrics
 
 TOTAL_K_TO_TEST = 10
@@ -44,8 +46,13 @@ def normalize(data):
 
     return data
 
-with open('spectrograms.json') as f:
-    data = json.load(f)
+print("Importing dataset...")
+
+with open('spectrograms_testing.json') as f:
+    data_testing = json.load(f)
+
+with open('spectrograms_training.json') as f:
+    data_training = json.load(f)
 
 spectrograms_training = []
 index_training = []
@@ -56,22 +63,32 @@ index_testing = []
 NUM_OF_SAMPLES = 40
 NUM_OF_COMPONENTS = 13
 
-random.shuffle(data)
+random.shuffle(data_testing)
+random.shuffle(data_training)
 
-for i in range(0, int(len(data) * PERCENTAGE_TOTAL)):
-    stream = data[i]["spectrograms"]
+for i in range(0, int(len(data_testing))):
+    stream = data_testing[i]["spectrograms_testing"]
     spectrogram = np.array(stream).reshape(NUM_OF_SAMPLES, NUM_OF_COMPONENTS)
 
     index = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    index[data[i]["classIndex"]] = 1
+    index[data_testing[i]["classIndex_testing"]] = 1
     index = np.array(index).reshape(12)
 
-    if (i < int(len(data) * PERCENTAGE_TESTING * PERCENTAGE_TOTAL)):
-        spectrograms_testing.append(spectrogram)
-        index_testing.append(index)
-    else:
-        spectrograms_training.append(spectrogram)
-        index_training.append(index)
+    spectrograms_testing.append(spectrogram)
+    index_testing.append(index)
+
+for i in range(0, int(len(data_training))):
+    stream = data_training[i]["spectrograms_training"]
+    spectrogram = np.array(stream).reshape(NUM_OF_SAMPLES, NUM_OF_COMPONENTS)
+
+    index = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    index[data_training[i]["classIndex_training"]] = 1
+    index = np.array(index).reshape(12)
+
+    spectrograms_training.append(spectrogram)
+    index_training.append(index)
+
+print("Creating the model...")
 
 ref = datetime.datetime.now()
 
@@ -92,6 +109,8 @@ spectrograms_testing = np.array(spectrograms_testing).reshape(np.array(spectrogr
 index_training = np.array(index_training).reshape(np.array(spectrograms_training).shape[0], num_labels)
 index_testing = np.array(index_testing).reshape(np.array(spectrograms_testing).shape[0], num_labels)
 
+print("Total training: " + str(len(spectrograms_training)))
+print("Total testing: " + str(len(spectrograms_testing)))
 print("Num rows: " + str(num_rows))
 print("Num columns: " + str(num_columns))
 print("Num channels: " + str(num_channels))
@@ -112,7 +131,7 @@ model.add(Conv2D(filters=64, kernel_size=2, activation='relu'))
 model.add(MaxPooling2D(pool_size=1))
 model.add(Dropout(0.2))
 
-model.add(Conv2D(filters=128, kernel_size=2, activation='relu'))
+model.add(Conv2D(filters=128, kernel_size=3, activation='relu'))
 model.add(MaxPooling2D(pool_size=2))
 model.add(Dropout(0.2))
 model.add(GlobalAveragePooling2D())
@@ -125,18 +144,13 @@ model.compile(loss='categorical_crossentropy', metrics=['accuracy'], optimizer='
 # Display model architecture summary
 model.summary()
 
-print(np.array(index_testing).shape)
-
 # Calculate pre-training accuracy
 score = model.evaluate(spectrograms_testing, index_testing, verbose=1)
 accuracy = 100*score[1]
 
 print("Pre-training accuracy: %.4f%%" % accuracy)
 
-from keras.callbacks import ModelCheckpoint
-from datetime import datetime
-
-num_epochs = 72
+num_epochs = 55#72
 num_batch_size = 256
 
 checkpointer = ModelCheckpoint(filepath='modelCNN.hdf5',
@@ -158,9 +172,3 @@ print("Testing Accuracy: ", score[1])
 model_json = model.to_json()
 with open("model_CNN.json", "w") as json_file:
     json_file.write(model_json)
-
-for i in range(len(spectrograms_testing)):
-    result = model.predict(spectrograms_testing[i])
-    print("-"*50)
-    print("Result:   " + str(result.reshape(1, result.shape[0], result.shape[1], result.shape[2])))
-    print("Original: " + str(index_testing[i]))
