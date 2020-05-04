@@ -26,6 +26,7 @@ ALPHA = 5e-4
 MAX_VALUE = 1.0
 
 classLabels = ['Complain', 'FireAlarm', 'BoilingWater', 'GlassBreak', 'Doorbell', 'Fall', 'CutleryFall', 'HeavyBreath', 'Rain', 'Help', 'RunningWater', 'Silence']
+labels_to_skip = [2, 3, 7, 8, 10]
 
 def normalize(data):
     maxv = 0.0
@@ -66,9 +67,18 @@ NUM_OF_COMPONENTS = 13
 random.shuffle(data_testing)
 random.shuffle(data_training)
 
+totalsamplestr = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+totalsampleste = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
 for i in range(0, int(len(data_testing))):
     stream = data_testing[i]["spectrograms_testing"]
     spectrogram = np.array(stream).reshape(NUM_OF_SAMPLES, NUM_OF_COMPONENTS)
+
+    indaux = data_testing[i]["classIndex_testing"]
+    skip = False
+    for v in labels_to_skip:
+        if (indaux == v): skip = True
+    if (skip): continue
 
     index = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     index[data_testing[i]["classIndex_testing"]] = 1
@@ -77,20 +87,39 @@ for i in range(0, int(len(data_testing))):
     spectrograms_testing.append(spectrogram)
     index_testing.append(index)
 
+    totalsampleste[data_testing[i]["classIndex_testing"]] += 1
+
 for i in range(0, int(len(data_training))):
     stream = data_training[i]["spectrograms_training"]
     spectrogram = np.array(stream).reshape(NUM_OF_SAMPLES, NUM_OF_COMPONENTS)
 
+    indaux = data_training[i]["classIndex_training"]
+    skip = False
+    for v in labels_to_skip:
+        if (indaux == v): skip = True
+    if (skip): continue
+
     index = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    index[data_training[i]["classIndex_training"]] = 1
+    index[indaux] = 1
     index = np.array(index).reshape(12)
 
     spectrograms_training.append(spectrogram)
     index_training.append(index)
 
+    totalsamplestr[data_training[i]["classIndex_training"]] += 1
+
+print("\n"*3)
+print("-"*50)
+for i in range(len(classLabels)):
+    if (i == 5 or i == 8 or i == 9):
+        print(classLabels[i] + ": \t\t" + str(totalsamplestr[i]) + "\t" + str(totalsamplestr[i]) + "\t" + str(totalsamplestr[i] + totalsampleste[i]))
+    else:
+        print(classLabels[i] + ": \t" + str(totalsamplestr[i]) + "\t" + str(totalsampleste[i]) + "\t" + str(totalsamplestr[i] + totalsampleste[i]))
+print("-"*50 + "\n")
+
 print("Creating the model...")
 
-ref = datetime.datetime.now()
+ref = datetime.now()
 
  # 13 features - 25 components
 
@@ -150,7 +179,7 @@ accuracy = 100*score[1]
 
 print("Pre-training accuracy: %.4f%%" % accuracy)
 
-num_epochs = 55#72
+num_epochs = 72#55#72
 num_batch_size = 256
 
 checkpointer = ModelCheckpoint(filepath='modelCNN.hdf5',

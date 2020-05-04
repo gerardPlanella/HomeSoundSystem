@@ -17,6 +17,9 @@ from keras.utils import np_utils
 from sklearn import metrics
 
 classLabels = ['Complain', 'FireAlarm', 'BoilingWater', 'GlassBreak', 'Doorbell', 'Fall', 'CutleryFall', 'HeavyBreath', 'Rain', 'Help', 'RunningWater', 'Silence']
+classLabelsCmp = ['C', 'FA', 'BW', 'GB', 'D', 'F', 'CF', 'HB', 'R', 'H', 'RW', 'S']
+
+labels_to_skip = [2, 3, 7, 8, 10]
 
 with open('spectrograms_testing.json') as f:
     data_testing = json.load(f)
@@ -32,6 +35,12 @@ random.shuffle(data_testing)
 for i in range(0, int(len(data_testing))):
     stream = data_testing[i]["spectrograms_testing"]
     spectrogram = np.array(stream).reshape(NUM_OF_SAMPLES, NUM_OF_COMPONENTS)
+
+    indaux = data_testing[i]["classIndex_testing"]
+    skip = False
+    for v in labels_to_skip:
+        if (indaux == v): skip = True
+    if (skip): continue
 
     indexaux = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     indexaux[data_testing[i]["classIndex_testing"]] = 1
@@ -56,7 +65,10 @@ values = []
 
 model = load_trained_model('model_CNN.json', 'modelCNN.hdf5')
 resultsCorrect = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+resultsCorrupting = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 resultsTotal = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+results = []
+for i in range(12): results.append([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 
 for i in range(len(spectrograms)):
 
@@ -72,6 +84,8 @@ for i in range(len(spectrograms)):
 
     resultsTotal[np.argmax(index[i])] += 1.0
     if (isCorrect): resultsCorrect[np.argmax(index[i])] += 1.0
+    else: resultsCorrupting[np.argmax(result)] += 1.0
+    results[np.argmax(index[i])][np.argmax(result)] += 1.0
 
     #if (not isCorrect):
     #    values.append(maxval)
@@ -88,15 +102,49 @@ values.sort()
 
 #print(values[int(len(values)*ACCEPTANCE)-1])
 
-print("\n"*3)
+print("\n"*2)
+print(" <---   ENCERTS PER EVENT   ---> \n")
 print("-"*50)
 for i in range(len(classLabels)):
-    if (i == 5 or i == 8 or i == 9):
-        print(classLabels[i] + ": \t\t%.2f" % ((resultsCorrect[i]/resultsTotal[i])*100.0), end='')
-        print("%", end='')
-        print(" (" + str(int(resultsCorrect[i])) + "/" + str(int(resultsTotal[i])) + ")")
-    else:
-        print(classLabels[i] + ": \t%.2f" % ((resultsCorrect[i]/resultsTotal[i])*100.0), end='')
-        print("%", end='')
-        print(" (" + str(int(resultsCorrect[i])) + "/" + str(int(resultsTotal[i])) + ")")
+    if (not i in labels_to_skip):
+        if (i == 5 or i == 8 or i == 9):
+            print(classLabels[i] + ": \t\t%.2f" % ((resultsCorrect[i]/resultsTotal[i])*100.0), end='')
+            print("%", end='')
+            print(" (" + str(int(resultsCorrect[i])) + "/" + str(int(resultsTotal[i])) + ")")
+        else:
+            print(classLabels[i] + ": \t%.2f" % ((resultsCorrect[i]/resultsTotal[i])*100.0), end='')
+            print("%", end='')
+            print(" (" + str(int(resultsCorrect[i])) + "/" + str(int(resultsTotal[i])) + ")")
 print("-"*50 + "\n")
+
+print("\n"*2)
+print(" <---   LOCALITZACIÓ DELS ERRORS   ---> \n")
+
+print("-"*50)
+for i in range(len(classLabels)):
+    if (not i in labels_to_skip):
+        if (i == 5 or i == 8 or i == 9):
+            print(classLabels[i] + ": \t\t" + str(int(resultsCorrupting[i])))
+        else:
+            print(classLabels[i] + ": \t" + str(int(resultsCorrupting[i])))
+print("-"*50 + "\n")
+
+print("\n"*2)
+print(" <---   MATRIU GENERAL DE RESULTATS   ---> \n")
+
+print("-"*100)
+print("\t", end='')
+for i in range(len(classLabelsCmp)):
+    if (not i in labels_to_skip):
+        print("\t" + classLabelsCmp[i], end='')
+print("")
+for i in range(len(classLabels)):
+    if (not i in labels_to_skip):
+        if (i == 5 or i == 8 or i == 9): print(classLabels[i] + ": \t\t", end='')#"%.2f" % ((resultsCorrect[i]/resultsTotal[i])*100.0), end='')
+        else: print(classLabels[i] + ": \t", end='')#"%.2f" % ((resultsCorrect[i]/resultsTotal[i])*100.0), end='')
+        for j in range(len(classLabels)):
+            if (not j in labels_to_skip):
+                print("%.2f" % ((results[i][j]/resultsTotal[i])*100.0), end='')
+                print("%\t", end='')
+        print("")
+print("-"*100 + "\n")
