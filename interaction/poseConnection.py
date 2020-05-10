@@ -38,14 +38,25 @@ class posseConnection():
         print("not connection pose detenction")
         sleep(0.5)
         connected = 1
-        print("pose connection: ", connected, "-"*50)
+
         self.persona = random.choice(yesNo)
         connected = 2
-        print("pose connection: ", connected, "-" * 50)
+
         sleep(10)
         self.positions = random.choice(pose)
         connected = 3
-        print("pose connection: ", connected, "-" * 50)
+
+    def thread_function_SERVERCONPOSEdef(self):
+        global yesNo
+        global pose
+        global error_con
+        global connected
+        error_con = 1
+        print("not connection pose detenction")
+        sleep(0.5)
+        connected = 3
+
+
 
     def thread_function_SERVERCONPOSE(self):
         global error_con
@@ -105,3 +116,7 @@ class posseConnection():
 
     def getposition(self):
         return self.positions
+
+    def setPoseConnection(self, persona, positions):
+        self.persona = persona
+        self.positions = positions

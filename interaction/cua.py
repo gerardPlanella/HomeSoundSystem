@@ -53,11 +53,23 @@ class ListaEvents():
 
 
     def appendEvent (self, event):
-        self.listaEvents.append(event)
+        trobat = 0
+        for event_aux in self.listaEvents:
+            if event.event == event_aux.event:
+                trobat = 1
+                if event.priority > event_aux.priority:
+                    self.listaEvents.remove(event_aux)
+                    self.listaEvents.append(event)
+
+        if trobat == 0:
+            self.listaEvents.append(event)
         self.bubbleSort()
 
+    def eventRemove(self, event):
+        self.listaEvents.remove(event)
+
     def popEvent (self):
-        return self.listaEvents.pop(0)
+        return self.listaEvents[0]
 
     def anyList(self):
         return len(self.listaEvents)
