@@ -37,6 +37,13 @@ def explicacioDeEventInfo(evento):
     text = "I detected that the "+ evento.event+ " event ocurred and I came to make sure you were aware of this."
     speak.reproduceText(text)
 
+def askAwareEventInfo():
+    time.sleep(1)
+    print('\n')
+    print("Are you aware of this?")
+    text = "Are you aware of this?"
+    speak.reproduceText(text)
+    
 def preguntarEstat():
     print('\n')
     print("Are you hurt? [y/n]")
@@ -149,3 +156,11 @@ def askFall():
     print("Did you fall and get back up by yourself? [y/n]")
     text = "Did you fall and get back up by yourself?"
     speak.reproduceText(text)
+    
+def invalidAnswer():
+    print("Sorry, I didn't understand your answer.")
+    text = "Sorry, I didn't understand your answer."
+    speak.reproduceText(text)
+    
+    
+    

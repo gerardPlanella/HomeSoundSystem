@@ -80,9 +80,9 @@ def waitStandUp(inputQueue, event):
     ac.preguntarEstat()
     
     # Wait for the user to answer
-    answer, userHurt = co.waitAnswerEstat(inputQueue)
+    answer, userHurt, numInvalidAnswer = co.waitAnswerEstat(inputQueue)
     
-    if answer == 0 or answer == 1 and userHurt == 1:
+    if answer == 0 or (answer == 1 and userHurt == 1) or numInvalidAnswer == 5:
         askForHelpLD(inputQueue, event)
         
     if answer == 1 and userHurt == 0:
@@ -103,9 +103,9 @@ def helpStandUp(inputQueue, event):
     # Ask again if the user is hurt to make sure everything is OK
     ac.preguntarEstat()
     # Wait for the user to answer
-    answer, userHurt = co.waitAnswerEstat(inputQueue)
+    answer, userHurt, numInvalidAnswer = co.waitAnswerEstat(inputQueue)
     
-    if answer == 0 or answer == 1 and userHurt == 1:
+    if answer == 0 or (answer == 1 and userHurt == 1) or numInvalidAnswer == 5:
         askForHelpLD(inputQueue, event)
         
     if answer == 1 and userHurt == 0:

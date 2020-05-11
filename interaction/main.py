@@ -110,10 +110,11 @@ def main():
                 pose.delete()
                 print("What position is the person in? ", pose.getposition())
                 print("-" * 100)
+                
                 if pose.getposition() == "dret" or pose.getposition() == "sentat" :
                     # Event where the robot only has to inform the user that they occurred
                     if event.event == 'FireAlarm' or event.event == 'Doorbell' or event.event == 'RunningWater' or event.event == 'Rain':
-                        su.infoEvent(event)
+                        su.infoEvent(event, inputQueue)
 
                     elif event.event == 'Fall':
                         ac.explicacioDeEvent(event)
@@ -131,9 +132,9 @@ def main():
                     ac.preguntarEstat()
 
                     # Wait for the user to answer
-                    answer, userHurt = co.waitAnswerEstat(inputQueue)
+                    answer, userHurt, numInvalidAnswer = co.waitAnswerEstat(inputQueue)
 
-                    if answer == 0:
+                    if answer == 0 or numInvalidAnswer == 5:
                         ld.askForHelpLD(inputQueue, event)
 
                     # The user is not hurt
@@ -184,9 +185,10 @@ def main():
                         ld.askForHelpLD(inputQueue, event)
 
                     # TODO: acabar interaccio si la persona esta estirada (fer opcions per terminal o random)
-                    pose.delete()
+
             # There is nobody in the room
             else:
+                pose.delete()
                 print("-" * 100)
                 print('\n')
                 print("*")
@@ -203,7 +205,7 @@ def main():
 
                 # Event where the robot only has to inform the user that they occurred
                 if event.event == 'FireAlarm' or event.event == 'Doorbell' or event.event == 'RunningWater' or event.event == 'Rain':
-                    er.infoEvent(event)
+                    er.infoEvent(event, inputQueue)
 
                 else:
                     er.askIfEventHappened(event, inputQueue)

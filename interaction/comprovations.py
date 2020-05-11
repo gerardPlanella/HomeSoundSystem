@@ -25,6 +25,8 @@ def waitAnswerEstat(inputQueue):
     answer = 0
     # Flag that indicates if the user is heart (1 = yes, 0 = no)
     userHurt = 0
+    # Flag that indicates how many times the user gave invalid answers
+    numInvalidAnswer = 0
     
     while i < 3:
         # Check input from the keyboard
@@ -51,9 +53,16 @@ def waitAnswerEstat(inputQueue):
                 print(input_str + " is an invalid answer")
                 answer = 0
                 i = 0
+                numInvalidAnswer += 1
                 timeStart = time.time()
-                ac.preguntarEstat()
-            
+                
+                
+                if numInvalidAnswer == 5:
+                    i = 4
+                else:
+                    ac.invalidAnswer()
+                    ac.preguntarEstat()
+                
         # Count time with no answer from the user
         if answer == 0:
             # Get minutes and seconds since timeStart
@@ -70,8 +79,68 @@ def waitAnswerEstat(inputQueue):
                 i += 1
                 ac.preguntarEstat()
                 
-    return answer, userHurt
+    return answer, userHurt, numInvalidAnswer
 
+# Wait for the user to answer if they are hurt
+def waitAnswerInfoEvent(inputQueue):
+    
+    # Time when the first question is made (Are you hurt?)
+    timeStart = time.time()
+    # Count how many times the robot asks if the person is hurt
+    i = 0
+    # Flag that indicates if the user has given an answer
+    answer = 0
+    # Flag that indicates how many times the user gave invalid answers
+    numInvalidAnswer = 0
+    
+    while i < 3:
+        # Check input from the keyboard
+        if inputQueue.qsize() > 0:
+            input_str = inputQueue.get()
+            answer = 1
+        
+            if input_str == EXIT_COMMAND:
+                print("Exiting serial terminal.")
+                break
+            
+            if input_str == 'y':
+                i = 4
+        
+            elif input_str == 'n':
+                i = 4
+            
+            else:
+                print('\n')
+                print(input_str + " is an invalid answer")
+                answer = 0
+                i = 0
+                numInvalidAnswer += 1
+                timeStart = time.time()
+                
+                
+                if numInvalidAnswer == 5:
+                    i = 4
+                else:
+                    ac.invalidAnswer()
+                    ac.askAwareEventInfo()
+            
+        # Count time with no answer from the user
+        if answer == 0:
+            # Get minutes and seconds since timeStart
+            minutes, seconds = getWaitTime(timeStart)
+            
+            if minutes == timeRepeatQuestion3[0] and seconds >= timeRepeatQuestion3[1] :
+                print('\n')
+                print("Three minutes passed with no answer.")
+                i += 1
+            elif i == 1 and minutes == timeRepeatQuestion2[0] and seconds >= timeRepeatQuestion2[1]:
+                i += 1
+                ac.askAwareEventInfo()
+            elif i == 0 and seconds > timeRepeatQuestion1:
+                i += 1
+                ac.askAwareEventInfo()
+                
+    return answer, numInvalidAnswer
 
 # Get hours, minutes and seconds since timeStart
 def getWaitTime(timeStart):
@@ -140,6 +209,7 @@ def waitYesNoAnswer(inputQueue, question):
                 answer = 0
                 print('\n')
                 print(input_str + " is an invalid answer")
+                ac.invalidAnswer()
                 if question == 1:
                     ac.askEventHappened()
                 if question == 2:

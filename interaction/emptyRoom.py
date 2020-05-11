@@ -65,12 +65,17 @@ def askForHelpER(inputQueue, event):
             # END OF TASK #
 
 
-def infoEvent(event):
+def infoEvent(event, inputQueue):
     # The robot explains why it is moving arround
     ac.explicacioDeEventInfo(event)
-    ac.finalProces(event)
-    ac.retornInici()
-    # END OF TASK #
+    ac.askAwareEventInfo()
+    answer, numInvalidAnswer = co.waitAnswerInfoEvent(inputQueue)
+    if answer == 1 and numInvalidAnswer < 5:
+        ac.finalProces(event)
+        ac.retornInici()
+        # END OF TASK #
+    elif answer == 0 or numInvalidAnswer == 5:
+        askForHelpER(inputQueue, event)
     
 def askIfEventHappened(event, inputQueue):
      # The robot explains why it is moving arround
@@ -88,11 +93,11 @@ def askIfEventHappened(event, inputQueue):
         ac.preguntarEstat()
     
         # Wait for the user to answer
-        answer, userHurt = co.waitAnswerEstat(inputQueue)
+        answer, userHurt, numInvalidAnswer = co.waitAnswerEstat(inputQueue)
         
         # The user did not reply and the robot has to ask for help
         # Or the answer is that they are hurt
-        if answer == 0 or (answer == 1 and userHurt == 1):
+        if answer == 0 or (answer == 1 and userHurt == 1) or numInvalidAnswer == 5:
 
             askForHelpER(inputQueue, event)
         

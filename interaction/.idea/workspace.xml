@@ -120,6 +120,9 @@
       <workItem from="1588601967210" duration="21000" />
       <workItem from="1588601999676" duration="327000" />
       <workItem from="1589066245245" duration="5398000" />
+      <workItem from="1589072342423" duration="48000" />
+      <workItem from="1589157052956" duration="7000" />
+      <workItem from="1589157076316" duration="665000" />
     </task>
     <servers />
   </component>
@@ -131,22 +134,22 @@
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
     <state x="628" y="286" key="FileChooserDialogImpl/0.0.1680.1050@0.0.1680.1050" timestamp="1588550401911" />
-    <state width="1638" height="667" key="GridCell.Tab.0.bottom" timestamp="1589071818151">
+    <state width="1638" height="716" key="GridCell.Tab.0.bottom" timestamp="1589209281909">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
-    <state width="1638" height="667" key="GridCell.Tab.0.bottom/0.0.1680.1050@0.0.1680.1050" timestamp="1589071818151" />
-    <state width="1638" height="667" key="GridCell.Tab.0.center" timestamp="1589071818150">
+    <state width="1638" height="716" key="GridCell.Tab.0.bottom/0.0.1680.1050@0.0.1680.1050" timestamp="1589209281909" />
+    <state width="1638" height="716" key="GridCell.Tab.0.center" timestamp="1589209281908">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
-    <state width="1638" height="667" key="GridCell.Tab.0.center/0.0.1680.1050@0.0.1680.1050" timestamp="1589071818150" />
-    <state width="1638" height="667" key="GridCell.Tab.0.left" timestamp="1589071818149">
+    <state width="1638" height="716" key="GridCell.Tab.0.center/0.0.1680.1050@0.0.1680.1050" timestamp="1589209281908" />
+    <state width="1638" height="716" key="GridCell.Tab.0.left" timestamp="1589209281907">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
-    <state width="1638" height="667" key="GridCell.Tab.0.left/0.0.1680.1050@0.0.1680.1050" timestamp="1589071818149" />
-    <state width="1638" height="667" key="GridCell.Tab.0.right" timestamp="1589071818151">
+    <state width="1638" height="716" key="GridCell.Tab.0.left/0.0.1680.1050@0.0.1680.1050" timestamp="1589209281907" />
+    <state width="1638" height="716" key="GridCell.Tab.0.right" timestamp="1589209281908">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
-    <state width="1638" height="667" key="GridCell.Tab.0.right/0.0.1680.1050@0.0.1680.1050" timestamp="1589071818151" />
+    <state width="1638" height="716" key="GridCell.Tab.0.right/0.0.1680.1050@0.0.1680.1050" timestamp="1589209281908" />
     <state width="1638" height="363" key="GridCell.Tab.1.bottom" timestamp="1588555469510">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
@@ -178,7 +181,7 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/tendencies_interaction_def$mainLaura.coverage" NAME="mainLaura Coverage Results" MODIFIED="1587917413647" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/interaction$main__1_.coverage" NAME="main (1) Coverage Results" MODIFIED="1589071566685" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/interaction$main__1_.coverage" NAME="main (1) Coverage Results" MODIFIED="1589157135578" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/tendencies_interaction_def$main__1_.coverage" NAME="main (1) Coverage Results" MODIFIED="1587909309764" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/interaction$mainLaura.coverage" NAME="main Coverage Results" MODIFIED="1588552650099" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
