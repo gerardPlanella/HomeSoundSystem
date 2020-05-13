@@ -11,6 +11,12 @@ NUM_COMPONENTS = 13
 OK = "ok"
 KO = "ko"
 
+INIT_VALUE = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+summary = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+burst = 0
+
+num_packets = int(1 / 0.025)
+
 class Client:
     __slots__ = ['fifo', 'name']
 
@@ -35,44 +41,63 @@ def getComponentsFromMessage(message):
     component_str = str_data.split(' ')
     component_str = list(filter(lambda a: a != '', component_str))
     component_str = np.array(component_str)
-    components = component_str.astype(np.float)
-    return [1, components]
 
+    print("New message of lenght: " + str(len(component_str)))
+
+    components = component_str.astype(np.float)
+    return [1, np.array(components).reshape(1, num_packets, NUM_COMPONENTS, 1)]
 
 def runDS(threadInfo, client):
     ds_run = True
     classifier = clsfy.Classifier()
 
     if (DEBUGGING): print("Sensor name: " + client.name + " \n")
+    burst = 0
+    summary = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
     while (threadInfo.running and ds_run):
         if len(client.fifo) > 0:
             component = client.fifo.pop(0)
+            component = np.array(component).reshape(1, num_packets, NUM_COMPONENTS, 1)
             #print("Message: " + str(component))
 
-            [ok, component] = getComponentsFromMessage(component)
+            #[ok, component] = getComponentsFromMessage(component)
             #print("Components: " + str(component))
 
             if (not ok):
-                if (DEBUGGING): print(client.name + " Client disconnected\n")
+                #if (DEBUGGING):
+                print(client.name + " Client disconnected\n")
                 ds_run = False
             else:
                 #if (DEBUGGING): print("Data received: " + str(component) + "\n")
-                if (len(component) != NUM_COMPONENTS and DEBUGGING): print("Incorrect components received")
+                if (len(component) != NUM_COMPONENTS * num_packets and DEBUGGING): print("Incorrect components received")
                 classifyComponents(threadInfo, component, client.name, classifier)
 
 def classifyComponents(threadInfo, components, name, classifier):
-
-    [event, event_index, confidence] = classifier.predict(components)
-    if(event != ""):
-        event = events.Event(event, name, confidence)
+    global burst
+    classLabels = ['Complain', 'FireAlarm', 'BoilingWater', 'GlassBreak', 'Doorbell', 'Fall', 'CutleryFall', 'HeavyBreath', 'Rain', 'Help', 'RunningWater', 'Silence']
+    [event_name, event_index, confidence] = classifier.predict(components)
+    if(event_name != ""):
+        event = events.Event(event_index, name, confidence)
         threadInfo.addEvent(event)
 
+        #summary[event_index] += 1
+        #burst += 1
+
+        #if False:
         print("-"*50)
-        print(event.type)
-        #print(event.time)
+        print(event_name)
+        print(event.time)
         #print(event.location)
         print(event.confidence)
+
+        #if (burst == 30):
+        #    burst = 0
+        #    print("-"*50)
+        #    for i in range(len(summary)):
+        #        print(classLabels[i] + ": " + str(summary[i]))
+        #        summary[i] = 0
+
         return 1
     else:
         return 0

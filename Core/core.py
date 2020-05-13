@@ -4,6 +4,7 @@ import dedicatedServer
 #from events import event, threadInfo
 import events
 import eventProcessor as ep
+import numpy as np
 
 ## TODO: Make Client class
 
@@ -26,6 +27,8 @@ def main():
     sock.bind((HOST, PORT))
 
     print("Server configured")
+    accumulatedNum = 0
+    accumulator = []
 
     try:
         while True:
@@ -36,10 +39,41 @@ def main():
             #print("Paquet received")
 
             if (address in client_streams):
-                client_streams[address].fifo.append(data.decode('utf-8'))
+                dataaux = str(data.decode('ascii'))
+                if ("\n" in dataaux): dataaux = dataaux[:-1]
+
+                component_str = dataaux.split(' ')
+                component_str = list(filter(lambda a: a != '', component_str))
+                component_str = np.array(component_str)
+                for i in range(len(component_str)):
+                    ind = component_str[i].find("-", 2)
+                    if (ind == -1):
+                        ind = component_str[i].find("-", 0)
+                        if (ind == 0 or ind == -1):
+                            continue
+                    num1 = component_str[i][0:ind-1]
+                    num2 = component_str[i][ind:]
+                    component_str[i] = num1
+
+                    component_str = np.insert(component_str, i+1, num2)
+
+                component_str = component_str.astype(np.float)
+
+                accumulatedNum += len(component_str)
+                for v in component_str: accumulator.append(v)
+
+                isFinal = (accumulatedNum >= 520)
+
+                #print("New message: " + str(component_str))
+                #print("Msg lenght: " + str(accumulatedNum))
+                #print("Is final: " + str(isFinal))
+
+                if (isFinal): accumulatedNum = 0
+
+                client_streams[address].fifo.append(dataaux)
             else:
                 #TODO: Remove OK and KO and Disconnect from Matlab Client
-                client = dedicatedServer.Client(data.decode('utf-8'))
+                client = dedicatedServer.Client(data.decode('ascii'))
                 client_streams.update({address : client})
 
                 #print_lock.acquire()
