@@ -1,0 +1,11 @@
+<launch>
+	
+	<!--NODE D'EXPLORACIÓ-->
+	<node pkg="exploracio" 
+  		  type="explora_fronteres_node" 
+  		  name="explora_fronteres_node" 
+  	      output="screen">
+  	      <remap from="/fronteres" to="/troba_fronteres_node/fronteres"/>
+	</node>
+	
+</launch>

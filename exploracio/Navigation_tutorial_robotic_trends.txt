@@ -1,0 +1,52 @@
+Nav_Robotica
+
+In case the user wants to see rviz in external computer, execute:
+1 - alias ros_kobuki='export ROS_MASTER_URI=http://10.42.0.1:11311 && export ROS_IP=10.42.0.1' 
+2 - ros_kobuki
+3 - execute any ros command you want. Everyting will be referenced to the external device.
+3.1 - rostopic list (shows the remote topics)
+3.2 - This is very usefull for rviz.
+
+Working remotely with exploration program:
+
+Execute navigation software to explore a room and create a map.
+1 - Connect to the NUC wifi: turtlebot_2
+2 - ssh turtlebot2@10.42.0.1      	(Password is ros)
+3 - roscore
+
+4 - Open another terminal, ssh into the robot again. (Step 2)
+4.1 - roslaunch exploracio exploracio_kobuki.launch
+
+5 - Open another terminal, ssh into the robot again. (Step 2)
+5.1 - roslaunch exploracio exploracio.launch
+
+The following commands execute the same task as the previous one. This commands are to understand the inner workings of the software.
+(All the tasks below has been automated thanks to exploracio_kobuki.launch)
+
+1 - Connect to the NUC wifi: turtlebot_2
+2 - ssh turtlebot2@10.42.0.1      	(Password is ros)
+3 - roscore
+
+4 - Open another terminal, ssh into the robot again. (Step 2)
+4.1 - roslaunch turtlebot_bringup minimal.launch
+
+5 - Open another terminal, ssh into the robot again. (Step 2)
+5.1 - roslaunch rplidar_ros rplidar.launch
+
+5.1 (error) -> If usb doesn't have acces, you have to execute Step A1 (bottom of this file).
+5.2 (error) -> Maybe, someone changed the laser usb into another port, in this case, you have to go inside the launcher (rplidar.launch) and change the USB port to ttyUSB1 instead of ttyUSB0.
+
+6 - Open another terminal, ssh into the robot again. (Step 2)
+6.1 - Check everything is ok (nodes and topics) 
+	rostopic list -> Must appear /scan topic
+
+7 - roslaunch turtlebot_rplidar gmapping.launch 
+
+8 - Open another terminal, ssh into the robot again. (Step 2)
+8.1 Exectar el node de trobar fronteres.
+
+9 - Open another terminal, ssh into the robot again. (Step 2)
+9.1- roslaunch exploracio exploracio.launch
+
+A1 - chmod 777 /dev/ttyUSB0
+
