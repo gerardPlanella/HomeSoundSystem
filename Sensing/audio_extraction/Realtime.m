@@ -28,37 +28,40 @@ mtWinRatio  = round(mtWin  / stStep);
 mtStepRatio = round(mtStep / stStep);
 
 %Connect to the server
-sock = serverConnect(addr, port, sensorName);
+%sock = serverConnect(addr, port, sensorName);
 
 while true
     
     % Record [Gaëtan & Adria]
     % -----------------------------------Signal recording & saving -------------------------
-    
+    recO
     recordblocking(recObj,TimeSave);     %Synchronous recording from audio device.
     %records for length of time, TimeSave, in seconds;
     %does not return until recording is finished
     
     audioData = getaudiodata(recObj);    %Get the audiodata
+    disp(size(audioData))
+    
+    %play(recObj)
     
     % STEP 1: short-term feature extraction:
-    stFeatures = stFeatureExtraction(audioData, Fs, stWin, stStep, {'mfcc'});
+    %stFeatures = stFeatureExtraction(audioData, Fs, stWin, stStep, {'mfcc'});
     
     % STEP 2: mid-term feature extraction:
     %[mtFeatures, st] = mtFeatureExtraction(stFeatures , mtWinRatio, mtStepRatio, '');
     
-    len = size(stFeatures, 2);
-    %Send audio features (MFCC components)
-    for i = 1:len
-        
-        %TESTING AREA (IGNORE)
-        %components = num2str(stFeatures(:,i)', "%f");
-        %disp(components)
-        %result = 1;
-        %END OF TESTING AREA
-        
-        serverSendComponents(sock, stFeatures(:,i)'); 
-    end
+%     len = size(stFeatures, 2);
+%     %Send audio features (MFCC components)
+%     for i = 1:len
+%         
+%         %TESTING AREA (IGNORE)
+%         %components = num2str(stFeatures(:,i)', "%f");
+%         %disp(components)
+%         %result = 1;
+%         %END OF TESTING AREA
+%         
+%         serverSendComponents(sock, stFeatures(:,i)'); 
+%     end
 end
 
 serverDisconnect(sock);
