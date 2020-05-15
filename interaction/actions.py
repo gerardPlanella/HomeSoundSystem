@@ -161,6 +161,19 @@ def invalidAnswer():
     print("Sorry, I didn't understand your answer.")
     text = "Sorry, I didn't understand your answer."
     speak.reproduceText(text)
+
+def InformRobotCannotMove():
+    print("the robot can't go to the place.")
+    text = "the robot can't go to the place."
+    speak.reproduceText(text)
     
-    
-    
+def StartMoving(evento):
+    print("I'm starting to move towards " + evento)
+    text = ("I'm starting to move towards" + evento)
+    speak.reproduceText(text)
+
+def nobodyintheRoom():
+    print("-" * 100)
+    print('\n')
+    print("*")
+    print(" There is nobody in the room.")

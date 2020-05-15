@@ -66,9 +66,7 @@ def askForHelpLD(inputQueue, event):
 
 
 def waitStandUp(inputQueue, event):
-    # Wait untill the user gets up
-    ac.esperarPersonaPeu()
-    time.sleep(2)
+
     print('\n')
     print("--------------------------------------------------------")
     print(" ")

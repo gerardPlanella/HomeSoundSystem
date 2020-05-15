@@ -15,6 +15,8 @@ import emptyRoom as er
 import standingUp as su
 import layDown as ld
 import fitxerProves
+from ConnectionPlusNavegation import NavegationStarts, SearchForPerson, askPose, NavegationEnd
+from Person import personaDreta, personaEstirada
 
 from poseConnection import posseConnection, connected
 
@@ -73,7 +75,7 @@ def main():
         #connexion con el servidor
         #x = threading.Thread(target = thread_function_SERVERCON(llista), args=(llista,))
         #prova
-        x = threading.Thread(target= fitxerProves.thread_function_prava3funcionsIgualsalMateixTemps(llista), args=(llista,))
+        x = threading.Thread(target= fitxerProves.thread_function_pravaTotesFuncions(llista), args=(llista,))
         x.start()
     except:
         print("server not connection")
@@ -86,134 +88,71 @@ def main():
 
     while(True):
         if llista.anyList() != 0:
-
             event = llista.popEvent()
             #robot parla i explica l'event rebut
             print("-"*60, " START", event.event, "-"*60, "\n")
             ac.iniciEvent(event)
-            #TODO:robot es mou (navegation)
-            print("\nThe robot moves towards ", event.lloc, "\n")
-            sleep(0.5)
-            print("the robot arrives to the ", event.lloc, "\n")
-            #connexio amb el arroyo
-            pose = posseConnection()
-            pose.startPoseConnnection()
-            while pose.getconection() < 2:
-                sleep(0.5)
 
-            print("-"*100)
-            print("Is there a person? ", pose.getpersona())
-            if pose.getpersona() == "yes":
+            #connecto amb la navegació
+            navOK = NavegationStarts(event)
 
-                while pose.getconection() != 3:
-                    sleep(0.5)
-                pose.delete()
-                print("What position is the person in? ", pose.getposition())
+            #la connexion ha sido un exito i he llegado al sitio
+            if navOK == "OK":
+                print("the robot arrives to the ", event.lloc, "\n")
+                pose = posseConnection()
+                person = SearchForPerson(pose)
                 print("-" * 100)
-                
-                if pose.getposition() == "dret" or pose.getposition() == "sentat" :
+                print("Is there a person? ", person)
+                if person == "yes":
+                    position = askPose(pose)
+                    print("What position is the person in? ", position)
+                    print("-" * 100)
+
+                    if position == "dret" or position == "sentat":
+                        personaDreta(event, inputQueue)
+
+                    elif position == "estirat":
+                        personaEstirada(event, inputQueue)
+
+                # There is nobody in the room
+                elif person == "No":
+
+                    ac.nobodyintheRoom()
+
+                    #TODO:buscar yayo
+                    # The robot looks for the user
+                    ac.buscarYayo(event)
+
+                    time.sleep(2)
+                    print('\n')
+                    print("-"*100)
+                    print("Robot finds the user")
+                    print("-"*100)
+
                     # Event where the robot only has to inform the user that they occurred
                     if event.event == 'FireAlarm' or event.event == 'Doorbell' or event.event == 'RunningWater' or event.event == 'Rain':
-                        su.infoEvent(event, inputQueue)
+                        er.infoEvent(event, inputQueue)
 
-                    elif event.event == 'Fall':
-                        ac.explicacioDeEvent(event)
-                        su.eventFall(event, inputQueue)
-
-                    # Other events
                     else:
-                        ac.explicacioDeEvent(event)
-                        su.otherEvent(event, inputQueue)
+                        er.askIfEventHappened(event, inputQueue)
 
+                llista.eventRemove(event)
+                #el robot se dirige al punto de carga.
+                NavegationEnd()
 
+            # el robot no se puede mover
+            elif navOK == 'KO':
+                llista.eventRemove(event)
+                ac.InformRobotCannotMove()
+                print("-" * 50, "END TASK", "-" * 50)
 
-                elif pose.getposition() == "estirat":
-                    # Ask up to three times preguntarEstat() if there is no reply durint three minutes.
-                    ac.preguntarEstat()
-
-                    # Wait for the user to answer
-                    answer, userHurt, numInvalidAnswer = co.waitAnswerEstat(inputQueue)
-
-                    if answer == 0 or numInvalidAnswer == 5:
-                        ld.askForHelpLD(inputQueue, event)
-
-                    # The user is not hurt
-                    if answer == 1 and userHurt == 0:
-
-                        answer = 0
-                        # The robot asks the user if they can stand up
-                        ac.askStandUp()
-
-                        # Ask if the user can stand up = 3
-                        yesNo = co.waitYesNoAnswer(inputQueue, 3)
-
-                        if yesNo == 'y':
-                            # Flag that indicates if the user can stand up on their own
-                            canStandUp = 1
-                            time.sleep(1)
-                            print('\n')
-                            print("OK")
-
-                        if yesNo == 'n':
-                            # Flag that indicates if the user can stand up on their own
-                            canStandUp = 0
-
-                        # The user can stand up
-                        if canStandUp == 1:
-                            # TODO: pose detection arroyo
-                            ld.waitStandUp(inputQueue, event)
-
-                        # The user can't stand up
-                        else:
-
-                            # The robots asks if it should get close to help the user stand up
-                            ac.preguntaVolAjuda()
-
-                            # Pregunta vol ajuda = 4
-                            yesNo = co.waitYesNoAnswer(inputQueue, 4)
-
-                            # The user wants the robot to get closer to help
-                            if yesNo == 'y':
-                                ld.helpStandUp(inputQueue, event)
-
-                            # The user doesn't want the robot to get closer
-                            if yesNo == 'n':
-                                ld.askForHelpLD(inputQueue, event)
-
-                                # The user is hurt
-                    if answer == 1 and userHurt == 1:
-                        ld.askForHelpLD(inputQueue, event)
-
-                    # TODO: acabar interaccio si la persona esta estirada (fer opcions per terminal o random)
-
-            # There is nobody in the room
+            # no he prodido connectar con la nevagacion
             else:
-                pose.delete()
-                print("-" * 100)
-                print('\n')
-                print("*")
-                print(" There is nobody in the room.")
+                llista.eventRemove(event)
+                print("Finish the task")
+                print("-" * 50, "END TASK", "-" * 50)
 
-                # The robot looks for the user
-                ac.buscarYayo(event)
 
-                time.sleep(2)
-                print('\n')
-                print("-"*100)
-                print("Robot finds the user")
-                print("-"*100)
-
-                # Event where the robot only has to inform the user that they occurred
-                if event.event == 'FireAlarm' or event.event == 'Doorbell' or event.event == 'RunningWater' or event.event == 'Rain':
-                    er.infoEvent(event, inputQueue)
-
-                else:
-                    er.askIfEventHappened(event, inputQueue)
-
-            llista.eventRemove(event)
-            
-            print("The robot arrives to the resting point\n")
-            print("-"*50, "END TASK", "-"*50)
 
 if __name__ == "__main__":
     main()

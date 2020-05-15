@@ -23,91 +23,60 @@ class posseConnection():
     def startPoseConnnection(self):
         global error_con
         try:
-            self.x = threading.Thread(target=self.thread_function_SERVERCONPOSEprova)
+            self.x = threading.Thread(target=self.thread_function_SERVERCONPOSE)
             self.x.start()
+            if error_con == 1:
+                print("not connection pose detenctiones -- Estart debug")
+            else:
+                error_con = 0
+            return True
         except:
             error_con = 1
             print("not connection pose detenction")
-
-    def thread_function_SERVERCONPOSEprova(self):
-        global yesNo
-        global pose
-        global error_con
-        global connected
-        error_con = 1
-        print("not connection pose detenction")
-        sleep(0.5)
-        connected = 1
-
-        self.persona = random.choice(yesNo)
-        connected = 2
-
-        sleep(10)
-        self.positions = random.choice(pose)
-        connected = 3
-
-    def thread_function_SERVERCONPOSEdef(self):
-        global yesNo
-        global pose
-        global error_con
-        global connected
-        error_con = 1
-        print("not connection pose detenction")
-        sleep(0.5)
-        connected = 3
-
+            return False
 
 
     def thread_function_SERVERCONPOSE(self):
         global error_con
-        global connected
         try:
+            error_con = 0
             self.obj.connect((HOST, PORT))
             print('Connected by')
-            connected = 1
-            self.persona = self.person().decode('ascii')
-            print("he rebut",self.persona)
-            connected = 2
-            self.positions= self.position().decode('ascii')
-            print("he rebut", self.positions)
-            connected = 3
-            self.close()
-            self.obj.close()
-
-
         except:
-            print("not connection pose detenction","*" *50)
-
-            global yesNo
-            global pose
             error_con = 1
-
-            sleep(0.5)
-            connected = 1
-            self.persona = random.choice(yesNo)
-            connected = 2
-            sleep(5)
-            self.positions = random.choice(pose)
-            connected = 3
+            print("not connection pose detenction")
 
 
     def person(self):
-        self.obj.sendall(b'persona')
-        return self.obj.recv(1024)
+        try:
+            self.obj.sendall(b'persona')
+            return self.obj.recv(1024).decode('ascii')
+        except:
+            return random.choice(yesNo)
 
     def close(self):
-        self.obj.sendall(b'close')
+        try:
+            self.obj.sendall(b'close')
+            self.obj.close()
+        except:
+            pass
 
     def position(self):
-        self.obj.sendall(b'posicion')
-        return self.obj.recv(1024)
+       try:
+            self.obj.sendall(b'posicion')
+            return self.obj.recv(1024).decode('ascii')
+       except:
+            return random.choice(pose)
+
 
     def delete(self):
+        global error_con
         global connected
         self.x.join()
         connected = 0
 
     def getconection(self):
+
         global connected
         return connected
 
