@@ -81,6 +81,7 @@ function myRecorder = nonBlockingAudioRecorder
           atSecond = atSecond + 1;
           if atSecond > 10
               stop(myRecorder);
+              delete(myRecorder);
           end
       end
   end

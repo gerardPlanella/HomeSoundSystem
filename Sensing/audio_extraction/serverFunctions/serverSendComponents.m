@@ -3,6 +3,7 @@ function serverSendComponents(sock, components)
 
 flushinput(sock);
 components = num2str(components, "%f");
+disp(components)
 fprintf(sock, components);
 
 end

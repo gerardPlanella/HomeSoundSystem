@@ -39,7 +39,7 @@ for i=1:length(D)       % for each WAV file
     FileNames{i} = curName;  % get current filename
     % extract mid-term features:
     [midFeatures, Centers, stFeaturesPerSegment,stFeat] = ...
-        featureExtractionFile(curName, stWin, stStep, mtWin, mtStep, featureStatistics,featureShort);
+        featureExtractionFile(curName, stWin, stStep, mtWin, mtStep, featureStatistics,featureShort)
     mtFeatures{i} = midFeatures;
     stFeatures{i} = stFeat;
 end
