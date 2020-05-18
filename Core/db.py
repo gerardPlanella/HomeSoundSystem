@@ -79,8 +79,8 @@ class HomeSoundSystemDB():
         cursor = self.conn.cursor()
 
         queryLogs = """INSERT INTO EventLog (location, time, type, power)
-                        VALUES ('%s', %s, %s, %s);"""
-        cursor.execute(queryLogs, (event.location, event.time, str(event.type), '.01', ))
+                        VALUES (%s, %s, %s, %s);"""
+        cursor.execute(queryLogs, (event.location, event.time, str(event.type), str(event.confidence), ))
         self.conn.commit()
         cursor.close()
 

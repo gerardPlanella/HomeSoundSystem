@@ -1,11 +1,12 @@
 from datetime import datetime
 
 class threadInfo():
-    __slots__ = ["running", "events"]
+    __slots__ = ["running", "events", "model"]
 
-    def __init__(self):
+    def __init__(self, model):
         self.running = True
         self.events = []
+        self.model = model
 
     def setRun(self, running):
         self.running = running

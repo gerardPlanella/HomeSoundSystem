@@ -1,0 +1,20 @@
+<launch>
+	<arg name="rplidar_port" default="0"/>
+	<arg name="move_base" default="true"/>
+
+	<!--GMAPPING & TURTLEBOT-->
+	<include file="$(find turtlebot_rplidar)/launch/gmapping_kobuki.launch">
+		<arg name="rplidar_port" value="$(arg rplidar_port)"/>
+		<arg name="move_base" value="$(arg move_base)"/>
+	</include>
+	
+	<!--TROBA FRONTERES-->
+	<node pkg="exploracio" 
+  		  type="troba_fronteres_node" 
+  		  name="troba_fronteres_node" 
+  	      output="log">
+  	      <param name="tamany_min_frontera" value="10"/>
+  	      <remap from="~map" to="/map"/>
+	</node>
+	
+</launch>
