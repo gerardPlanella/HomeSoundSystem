@@ -26,7 +26,8 @@ ALPHA = 5e-4
 MAX_VALUE = 1.0
 
 classLabels = ['Complain', 'FireAlarm', 'BoilingWater', 'GlassBreak', 'Doorbell', 'Fall', 'CutleryFall', 'HeavyBreath', 'Rain', 'Help', 'RunningWater', 'Silence']
-labels_to_skip = [2, 3, 7, 8, 10]
+#labels_to_skip = [2, 4, 6, 7, 8, 9, 10]
+labels_to_skip = [2, 3, 8, 10]
 
 def normalize(data):
     maxv = 0.0
@@ -179,7 +180,7 @@ accuracy = 100*score[1]
 
 print("Pre-training accuracy: %.4f%%" % accuracy)
 
-num_epochs = 72#55#72
+num_epochs = 72
 num_batch_size = 256
 
 checkpointer = ModelCheckpoint(filepath='modelCNN.hdf5',

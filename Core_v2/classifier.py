@@ -6,7 +6,7 @@ from keras.layers import Convolution2D, Conv2D, MaxPooling2D, GlobalAveragePooli
 from keras.layers import Convolution1D, Conv1D, MaxPooling1D, GlobalAveragePooling1D
 from keras.optimizers import Adam
 from keras.utils import np_utils
-from keras import backend as K 
+from keras import backend as K
 from sklearn import metrics
 import math
 import json
@@ -20,7 +20,7 @@ from keras.models import model_from_json
 MODEL_PATH = "modelCNN.hdf5"
 MODEL_JSON_PATH = "model_CNN.json"
 
-CERTAINTY_DIFFERENCE_THRESHOLD = 0.1#0.302
+CERTAINTY_DIFFERENCE_THRESHOLD = 0.6
 
 classLabels = ['Complain', 'FireAlarm', 'BoilingWater', 'GlassBreak', 'Doorbell', 'Fall', 'CutleryFall', 'HeavyBreath', 'Rain', 'Help', 'RunningWater', 'Silence']
 
@@ -39,14 +39,14 @@ class Classifier():
     def __init__(self, model):
         self.model = model
         try:
-            #self.model = self.load_trained_model(MODEL_JSON_PATH, MODEL_PATH)
+            self.model = self.load_trained_model(MODEL_JSON_PATH, MODEL_PATH)
             ok = True
         except:
             ok = False
 
     def predict(self, components):
-        K.clear_session()
-        result = np.array(self.model.predict(components))
+        result = np.array(self.model.predict(components))[0]
+        print(result)
 
         index = np.argmax(result)
         confidence = result[index]
@@ -55,9 +55,9 @@ class Classifier():
         #confidence_2 = max(result)
 
         if((confidence) < CERTAINTY_DIFFERENCE_THRESHOLD):
+            print("Packet received but discarded [" + classLabels[index] + "]")
             index = -1
             event = ""
-            print("Packet received but discarded")
         else:
             event = classLabels[index]
 

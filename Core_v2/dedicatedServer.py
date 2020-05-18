@@ -58,22 +58,17 @@ def runDS(threadInfo, client):
     while (threadInfo.running and ds_run):
         if len(client.fifo) > 0:
             component = client.fifo.pop(0)
-            print(component)
+            #print(component)
             component = np.array(component).reshape(1, num_packets, NUM_COMPONENTS, 1)
-            #print("Message: " + str(component))
+            #print(component)
 
-            #[ok, component] = getComponentsFromMessage(component)
-            #print("Components: " + str(component))
             if (isinstance(component, str)): ok = component != "disconnect"
             else: ok = True
 
             if (not ok):
-                #if (DEBUGGING):
                 print(client.name + " Client disconnected\n")
                 ds_run = False
             else:
-                #if (DEBUGGING): print("Data received: " + str(component) + "\n")
-                #if (len(component)*len(component[0]) != NUM_COMPONENTS * num_packets and DEBUGGING): print("Incorrect components received")
                 classifyComponents(threadInfo, component, client.name, classifier)
 
 def classifyComponents(threadInfo, components, name, classifier):
@@ -84,22 +79,11 @@ def classifyComponents(threadInfo, components, name, classifier):
         event = events.Event(event_index, name, confidence)
         threadInfo.addEvent(event)
 
-        #summary[event_index] += 1
-        #burst += 1
-
-        #if False:
         print("-"*50)
         print(event_name)
         print(event.time)
         #print(event.location)
         print(event.confidence)
-
-        #if (burst == 30):
-        #    burst = 0
-        #    print("-"*50)
-        #    for i in range(len(summary)):
-        #        print(classLabels[i] + ": " + str(summary[i]))
-        #        summary[i] = 0
 
         return 1
     else:

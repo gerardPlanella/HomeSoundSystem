@@ -1,0 +1,32 @@
+Info:
+ - localització
+ - time
+ - type
+ - Amplitude????
+
+
+ Consultes d'interès:
+
+//Retorna la quantitat de vegades que ha succeit un event en el periode de temps definit a partir de (timestamp - period) fins timestamp, on period s'indica en segons.
+//A més a més, es comprova també la quantitat de vegades de ha succeit en els n dies anteriors a la mateixa franja horaria (quantitat de dies definits per amountOfDays)
+ + N events of a type at in a period of time:                 int nEvents         (int eventType, datetime timeStamp, int period, int amountOfDays)
+ + N events of a type in a location in a period of time:      int nEvents         (int eventType, datetime timeStamp, string location char period, int amountOfDays)
+
+ + last event of a type that happened:                        event               (int eventType)
+ + last event of a type that happened in a location:          event               (int eventType, string location)
+
+ + N events that happened between time1 and time2:            array of events    (datetime time1, datetime time2)
+ + N events of a type between time1 and time2 in a location:  array of events     (int eventType, string location, datetime time1, datetime time2)
+
+ - Most frequent event in a period of time:                   int nEvents, event.type , array of locations  (datetime timeStamp, int period, int amountOfDays)
+ - Most frequent event in a location in a period of time      int nEvents, event.type (string location, datetime timeStamp, int period, int amountOfDays)
+
+------------------------------------------------------------------------------------
+IMPLEMENTATION
+
+Tables:
+ - EventLog
+    - location varchar(255)
+    - time timeStamp
+    - type int
+    - power numeric

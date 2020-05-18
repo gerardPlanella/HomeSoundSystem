@@ -19,7 +19,8 @@ from sklearn import metrics
 classLabels = ['Complain', 'FireAlarm', 'BoilingWater', 'GlassBreak', 'Doorbell', 'Fall', 'CutleryFall', 'HeavyBreath', 'Rain', 'Help', 'RunningWater', 'Silence']
 classLabelsCmp = ['C', 'FA', 'BW', 'GB', 'D', 'F', 'CF', 'HB', 'R', 'H', 'RW', 'S']
 
-labels_to_skip = [2, 3, 7, 8, 10]
+labels_to_skip = [2, 3, 8, 10]
+#labels_to_skip = []
 
 with open('spectrograms_testing.json') as f:
     data_testing = json.load(f)

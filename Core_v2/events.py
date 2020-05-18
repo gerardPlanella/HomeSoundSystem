@@ -4,7 +4,7 @@ class threadInfo():
     __slots__ = ["running", "events", "model"]
 
     def __init__(self, model):
-        self.running = True
+        self.running = False
         self.events = []
         self.model = model
 
