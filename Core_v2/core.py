@@ -104,5 +104,6 @@ def socket_listener(threadInfo, client):
 
 
 if __name__ == "__main__":
+    threadInfo.running = True
     main()
     print("Core Terminated\n")
