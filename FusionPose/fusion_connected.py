@@ -166,7 +166,6 @@ if __name__ == '__main__':
     # lo convierte en socket servidor
     serversocket.listen(1)
 
-
     args = parser.parse_args()
     
     cam = cv2.VideoCapture(args.camera_index)
@@ -208,7 +207,8 @@ if __name__ == '__main__':
         
         clfs = loadAllModelsFromFolder("./MPL_models/")
         
-        a = 0
+        thereIsAHuman = False
+        classificationResult = -1
 
         while(True):
             # acepta conexiones externas
@@ -216,82 +216,91 @@ if __name__ == '__main__':
             (clientsocket, address) = serversocket.accept()
         
             while(True):    
-                
+                thereIsAHuman = False
+                isSitting = False
+
                 chunk = clientsocket.recv(1024)
                 
                 chunk = chunk.decode('ascii')
 
                 print("Reb:" + chunk)
+                
+                ret_val, imageToProcess = cam.read()
+                humans = TFInference(imageToProcess,tfe)
+                
+                #Check is tf detected more than one human
+                if len(humans) > 1:
+                    print("More than one human detected TF. Skipping frame.")
+                    continue
+                
+                #Check if tf detected any human part
+                if len(humans) == 0:
+                    print("No visible humans.")
+                    enoughData = False
+                    dataReliable = False
+                    #continue
+                else:
+                    thereIsAHuman = True
 
+                    #Tf detected something, save it
+                    TF_data = humans[0].body_parts
+                        
+                    #Check if the data is usable for all models.
+                    
+                    dataReliable = Model.isScoreAcceptable(TF_data,0.3)
+
+                    enoughData = Model.skeletonFitsAModel(TF_data)
+
+                if enoughData and dataReliable:
+                    result = classify(clfs,TF_data)
+                    classificationResult = result
+                    v.updateDataAndDraw(TF_data, result)
+                    
+                else:    
+                    print("\t\tCant detect anything usable with TF.")
+            
+                    #Proceed with OpenPose...
+                    datum = OpenPoseInference(imageToProcess,op)
+                    
+                    if(len(datum.poseKeypoints.shape) == 3):
+                        thereIsAHuman = True
+                        #Convert from BODY 25 TO COCO
+                        OP_data = Model.fromBodyToCoco(datum.poseKeypoints[0],imageToProcess.shape[1],imageToProcess.shape[0])
+                        
+                        #Check if the TF skeleton data is usable for any model.
+                        worthItToSave = Model.skeletonFitsAModel(OP_data)
+
+                        if worthItToSave:
+                            result = classify(clfs, OP_data)
+                            classificationResult = result
+                            v.updateDataAndDraw(OP_data, result)
+                        else:    
+                            print("\t\tCant detect anything usable with OP.")
+            
+            
                 if chunk == "persona":
                     print("Recieved: Persona")
-                    clientsocket.sendall('yes'.encode('ascii'))
-                
+                    if thereIsAHuman:
+                        clientsocket.sendall('yes'.encode('ascii'))
+                    else:
+                        clientsocket.sendall('no'.encode('ascii'))
+
                 elif chunk == "posicion":
-                    print("Recieved:posicion")
-                    if a == 0:
+                    print("Recieved: Posicion")
+                    if(classificationResult == 0):
+                        print("Sending dret")
+                        clientsocket.sendall('dret'.encode('ascii'))
+                    elif classificationResult == 1:
+                        print("Sending sentat")
                         clientsocket.sendall('sentat'.encode('ascii'))
                     else:
-                        clientsocket.sendall('dret'.encode('ascii'))
-                
-                    a+=1
-                            
+                        print("Sending estirat")
+                        clientsocket.sendall('estirat'.encode('ascii'))
+                    
                 if chunk == 'close':
                     clientsocket.close()
-                    break        
-            
-            """
+                    break      
 
-            ret_val, imageToProcess = cam.read()
-            humans = TFInference(imageToProcess,tfe)
-            
-            #Check is tf detected more than one human
-            if len(humans) > 1:
-                print("More than one human detected TF. Skipping frame.")
-                continue
-            
-            #Check if tf detected any human part
-            if len(humans) == 0:
-                print("No visible humans.")
-                enoughData = False
-                dataReliable = False
-                #continue
-            else:
-                #Tf detected something, save it
-                TF_data = humans[0].body_parts
-                    
-                #Check if the data is usable for all models.
-                
-                dataReliable = Model.isScoreAcceptable(TF_data,0.3)
-
-                enoughData = Model.skeletonFitsAModel(TF_data)
-
-            if enoughData and dataReliable:
-                result = classify(clfs,TF_data)
-                
-                v.updateDataAndDraw(TF_data, result)
-                
-            else:    
-                print("\t\tCant detect anything usable with TF.")
-        
-                #Proceed with OpenPose...
-                datum = OpenPoseInference(imageToProcess,op)
-                
-                if(len(datum.poseKeypoints.shape) == 3):
-                
-                    #Convert from BODY 25 TO COCO
-                    OP_data = Model.fromBodyToCoco(datum.poseKeypoints[0],imageToProcess.shape[1],imageToProcess.shape[0])
-                    
-                    #Check if the TF skeleton data is usable for any model.
-                    worthItToSave = Model.skeletonFitsAModel(OP_data)
-
-                    if worthItToSave:
-                        result = classify(clfs, OP_data)
-                        
-                        v.updateDataAndDraw(OP_data, result)
-                    else:    
-                        print("\t\tCant detect anything usable with OP.")
-            """
     except Exception as e:
         traceback.print_exc()
         print(e)

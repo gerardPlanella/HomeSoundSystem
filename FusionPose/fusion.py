@@ -123,6 +123,7 @@ def classify(clfs, skeleton):
             result = clf[1].predict(feature)
             results.append((clf[0],result[0]))
             print("Classify result: " + clf[0].name + " " + str(HumanPositions(result[0])))
+            #if(clf[0].name == "RIGHT_SIDE"):return result[0]
             ke = True
 
 
@@ -145,7 +146,7 @@ def extractFinalClassificationValue(classificationOutput):
         if ResultCounter[resultKey] == pp:
             classificationFinalResult = resultKey
             break
-
+    
     print("CLASSIFICATION IS " + str(HumanPositions(classificationFinalResult)))
     return classificationFinalResult
 
