@@ -8,7 +8,8 @@ HOST = '25.120.131.106'  # Standard loopback interface address (localhost)
 PORT = 8001         # Port to listen on (non-privileged ports are > 1023)
 
 def sendString(socket, msg):
-    socket.sendall(msg.encode())
+    socket.send(msg.encode())
+    print("Message sent to robot");
 
 def eventProcessorMain(threadInfo):
     print("Connecting to robot")
@@ -22,16 +23,14 @@ def eventProcessorMain(threadInfo):
     try:
         client, addr = sock.accept()
         #print_lock.acquire()
-        print("[ETP] Connected to Robot in @ :" + addr[0])
+        print("[ETP] Connected to Robot in @ : " + addr[0])
     except Exception as e:
         print("error connecting to robot")
         print(e)
 
     database = db.HomeSoundSystemDB()
 
-
     while (threadInfo.running):
-
         while (threadInfo.nEvents() == 0 or not threadInfo.running):
             time.sleep(.1)
 
@@ -39,11 +38,12 @@ def eventProcessorMain(threadInfo):
 
         event = threadInfo.getEvent()
 
-        #print("New event: " + str(event.type))
+        print("New event: " + str(event.type))
 
         robotHasToBeNotified = True
         if (robotHasToBeNotified):
-            sendString(client, event.location + "%" + str(event.type) + "%" + str(event.time))
+            print("Message to robot: " + (event.location + "%" + str(event.type) + "%" + str(event.time)))
+            sendString(client, event.location.replace("\n", "") + "%" + str(event.type) + "%" + str(event.time) + "%" + str(event.confidence))
 
         database.addLog(event)
     """
@@ -57,4 +57,4 @@ def eventProcessorMain(threadInfo):
         database.addLog(event)
     """
 
-    dtabase.closeDB()
+    database.closeDB()
