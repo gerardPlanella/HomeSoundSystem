@@ -6,7 +6,7 @@ from multiprocessing.connection import wait
 from time import sleep
 import random
 
-HOST = '25.120.137.245'  # Standard loopback interface address (localhost)
+HOST = '25.44.178.165'  # Standard loopback interface address (localhost)
 PORT = 42069  # Port to listen on (non-privileged ports are > 1023)
 
 
@@ -35,30 +35,35 @@ class navegation():
         global error_con
         try:
             self.obj.connect((HOST, PORT))
-            print('Connected by')
+            print('Connected by navegation')
             error_con = 0
+
         except:
             error_con = 1
             print("not connection navegation---> Start simulation")
-            return False
+        return not error_con
+
 
     #le pedimos al robot que gire
     def turn(self):
         try:
             self.obj.sendall(b'turn')
+            print("send turn")
             return self.obj.recv(1024).decode('ascii')
         except:
-            return random.choice(okko)
+            return okko[1]
 
 
     # le pedimos al robot que vaya a una sala
     def goSomewhere(self, sitio):
+        info = "go" + "%" + sitio
         try:
-            self.obj.sendall(b'go')
-            self.obj.sendall(sitio.endecode('ascii'))
+            #self.obj.sendall(b'go')
+            #self.obj.sendall(b'go%kitchen')
+            self.obj.sendall((str(info)).encode('ascii'))
             return self.obj.recv(1024).decode('ascii')
         except:
-            return random.choice(okko)
+            return okko[0]
 
     # cerramos connexion con la navegación
     def close(self):
@@ -67,6 +72,7 @@ class navegation():
         try:
             self.obj.sendall(b'close')
             self.obj.close()
-            self.x.join()
+            #self.x.join()
         except:
-            self.x.join()
+            pass
+            #self.x.join()

@@ -41,10 +41,13 @@ class posseConnection():
         try:
             error_con = 0
             self.obj.connect((HOST, PORT))
-            print('Connected by')
+            print('Connected by pose ')
+
         except:
             error_con = 1
             print("not connection pose detenction")
+
+        return not error_con
 
 
     def person(self):
@@ -52,7 +55,7 @@ class posseConnection():
             self.obj.sendall(b'persona')
             return self.obj.recv(1024).decode('ascii')
         except:
-            return random.choice(yesNo)
+            return "no"
 
     def close(self):
         try:
@@ -72,7 +75,7 @@ class posseConnection():
     def delete(self):
         global error_con
         global connected
-        self.x.join()
+        #self.x.join()
         connected = 0
 
     def getconection(self):

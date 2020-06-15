@@ -15,7 +15,7 @@ import emptyRoom as er
 import standingUp as su
 import layDown as ld
 import fitxerProves
-from ConnectionPlusNavegation import NavegationStarts, SearchForPerson, askPose, NavegationEnd
+from ConnectionPlusNavegation import NavegationStarts, SearchForPerson, askPose, NavegationEnd, searchForSomeone
 from Person import personaDreta, personaEstirada
 
 from poseConnection import posseConnection, connected
@@ -28,7 +28,7 @@ speak = al.speech()
 def thread_function_SERVERCONprova(llista):
     print("no es pot conectar server----modo debug on")
     while True:
-        e = c.event("garden", int(random.randrange(10)), "2020-04-23 20:11:20.728069", float(0.98))
+        e = c.event("kitchen", int(random.randrange(10)), "2020-04-23 20:11:20.728069", float(0.98))
         llista.appendEvent(e)
         sleep(1)
 
@@ -44,23 +44,29 @@ def thread_function_SERVERCON(llista):
     except:
         print("no es pot conectar server----modo debug on")
         while True:
-            e = c.event("garden", int("1"), "2020-04-23 20:11:20.728069", float(0.98))
+            e = c.event("bathroom", int("1"), "2020-04-23 20:11:20.728069", float(0.98))
             llista.appendEvent(e)
             sleep(1)
 
     while True:
+        print("hola abans rebo objecte")
         data = str(obj.recv(1024))
+        print("hola despres rebo objecte")
         data = data[2:-1]
         print(data)
-        info = data.split("%")
-        llista = c.ListaEvents()
-        e = c.event(info[0], int(info[1]), info[2], float(info[3]))
-        llista.appendEvent(e)
-        print("location : "+ e.lloc)
-        print("type : " + str(e.event))
-        print("time : " + e.timeestamp)
-        print("confidence : " + str(e.confidence))
-        print("-"*50)
+        if (data == " "):
+            print ("estic rebent merda")
+        else:
+            info = data.split("%")
+            e = c.event(info[0], int(info[1]), info[2], float(info[3]))
+            llista.appendEvent(e)
+            print("location : "+ e.lloc)
+            print("type : " + str(e.event))
+            print("time : " + e.timeestamp)
+            print("confidence : " + str(e.confidence))
+            print("-"*50)
+
+
 
 
 def read_kbd_input(inputQueue):
@@ -71,22 +77,25 @@ def read_kbd_input(inputQueue):
 
 def main():
     llista = c.ListaEvents()
+
     try:
         #connexion con el servidor
-        #x = threading.Thread(target = thread_function_SERVERCON(llista), args=(llista,))
+        x = threading.Thread(target = thread_function_SERVERCON, args=(llista,))
         #prova
-        x = threading.Thread(target= fitxerProves.thread_function_pravaTotesFuncions(llista), args=(llista,))
+        #x = threading.Thread(target= fitxerProves.thread_function_pravaTotesFuncions(llista), args=(llista,))
         x.start()
     except:
-        print("server not connection")
+        print("server Miquel not connection")
+
 
     inputQueue = queue.Queue()
-
     # # Read from the keyboard
     inputThread = threading.Thread(target=read_kbd_input, args=(inputQueue,), daemon=True)
     inputThread.start()
 
+    print("abans del while")
     while(True):
+        #print(llista)
         if llista.anyList() != 0:
             event = llista.popEvent()
             #robot parla i explica l'event rebut
@@ -100,9 +109,11 @@ def main():
             if navOK == "OK":
                 print("the robot arrives to the ", event.lloc, "\n")
                 pose = posseConnection()
+                print("abans de search for a person")
                 person = SearchForPerson(pose)
                 print("-" * 100)
                 print("Is there a person? ", person)
+
                 if person == "yes":
                     position = askPose(pose)
                     print("What position is the person in? ", position)
@@ -115,26 +126,28 @@ def main():
                         personaEstirada(event, inputQueue)
 
                 # There is nobody in the room
-                elif person == "No":
+                elif person == "no":
 
                     ac.nobodyintheRoom()
 
                     #TODO:buscar yayo
                     # The robot looks for the user
                     ac.buscarYayo(event)
+                    searchOK = searchForSomeone(event)
 
-                    time.sleep(2)
-                    print('\n')
-                    print("-"*100)
-                    print("Robot finds the user")
-                    print("-"*100)
+                    if searchOK == 'OK':
+                        print('\n')
+                        print("-" * 100)
+                        print("Robot finds the user")
+                        print("-" * 100)
+                        # Event where the robot only has to inform the user that they occurred
+                        if event.event == 'FireAlarm' or event.event == 'Doorbell' or event.event == 'RunningWater' or event.event == 'Rain':
+                            er.infoEvent(event, inputQueue)
 
-                    # Event where the robot only has to inform the user that they occurred
-                    if event.event == 'FireAlarm' or event.event == 'Doorbell' or event.event == 'RunningWater' or event.event == 'Rain':
-                        er.infoEvent(event, inputQueue)
-
+                        else:
+                            er.askIfEventHappened(event, inputQueue)
                     else:
-                        er.askIfEventHappened(event, inputQueue)
+                        print("We can't found anyperson")
 
                 llista.eventRemove(event)
                 #el robot se dirige al punto de carga.

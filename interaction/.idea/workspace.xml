@@ -123,7 +123,13 @@
       <workItem from="1589072342423" duration="48000" />
       <workItem from="1589157052956" duration="7000" />
       <workItem from="1589157076316" duration="665000" />
-      <workItem from="1589549877828" duration="9860000" />
+      <workItem from="1589549877828" duration="10337000" />
+      <workItem from="1589729939096" duration="1213000" />
+      <workItem from="1591089058673" duration="13235000" />
+      <workItem from="1591119549965" duration="2104000" />
+      <workItem from="1591860591427" duration="766000" />
+      <workItem from="1591908284309" duration="6744000" />
+      <workItem from="1591958501378" duration="2167000" />
     </task>
     <servers />
   </component>
@@ -139,22 +145,22 @@
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
     <state x="628" y="286" key="FileChooserDialogImpl/0.0.1680.1050@0.0.1680.1050" timestamp="1588550401911" />
-    <state width="1638" height="448" key="GridCell.Tab.0.bottom" timestamp="1589559552905">
+    <state width="1638" height="588" key="GridCell.Tab.0.bottom" timestamp="1592215357047">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
-    <state width="1638" height="448" key="GridCell.Tab.0.bottom/0.0.1680.1050@0.0.1680.1050" timestamp="1589559552905" />
-    <state width="1638" height="448" key="GridCell.Tab.0.center" timestamp="1589559552903">
+    <state width="1638" height="588" key="GridCell.Tab.0.bottom/0.0.1680.1050@0.0.1680.1050" timestamp="1592215357047" />
+    <state width="1638" height="588" key="GridCell.Tab.0.center" timestamp="1592215357046">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
-    <state width="1638" height="448" key="GridCell.Tab.0.center/0.0.1680.1050@0.0.1680.1050" timestamp="1589559552903" />
-    <state width="1638" height="448" key="GridCell.Tab.0.left" timestamp="1589559552903">
+    <state width="1638" height="588" key="GridCell.Tab.0.center/0.0.1680.1050@0.0.1680.1050" timestamp="1592215357046" />
+    <state width="1638" height="588" key="GridCell.Tab.0.left" timestamp="1592215357045">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
-    <state width="1638" height="448" key="GridCell.Tab.0.left/0.0.1680.1050@0.0.1680.1050" timestamp="1589559552903" />
-    <state width="1638" height="448" key="GridCell.Tab.0.right" timestamp="1589559552904">
+    <state width="1638" height="588" key="GridCell.Tab.0.left/0.0.1680.1050@0.0.1680.1050" timestamp="1592215357045" />
+    <state width="1638" height="588" key="GridCell.Tab.0.right" timestamp="1592215357047">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
-    <state width="1638" height="448" key="GridCell.Tab.0.right/0.0.1680.1050@0.0.1680.1050" timestamp="1589559552904" />
+    <state width="1638" height="588" key="GridCell.Tab.0.right/0.0.1680.1050@0.0.1680.1050" timestamp="1592215357047" />
     <state width="1638" height="363" key="GridCell.Tab.1.bottom" timestamp="1588555469510">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
@@ -175,19 +181,19 @@
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
     <state x="349" y="164" key="SettingsEditor/0.0.1680.1050@0.0.1680.1050" timestamp="1589066296519" />
-    <state x="519" y="346" key="com.intellij.ide.util.TipDialog" timestamp="1589549878853">
-      <screen x="0" y="22" width="1680" height="953" />
-    </state>
-    <state x="519" y="357" key="com.intellij.ide.util.TipDialog/0.0.1680.1050@0.0.1680.1050" timestamp="1589066247968" />
-    <state x="519" y="346" key="com.intellij.ide.util.TipDialog/0.22.1680.953@0.22.1680.953" timestamp="1589549878853" />
-    <state x="432" y="250" width="816" height="550" key="find.popup" timestamp="1589069011776">
+    <state x="519" y="357" key="com.intellij.ide.util.TipDialog" timestamp="1591958562550">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
-    <state x="432" y="250" width="816" height="550" key="find.popup/0.0.1680.1050@0.0.1680.1050" timestamp="1589069011776" />
+    <state x="519" y="357" key="com.intellij.ide.util.TipDialog/0.0.1680.1050@0.0.1680.1050" timestamp="1591958562550" />
+    <state x="519" y="346" key="com.intellij.ide.util.TipDialog/0.22.1680.953@0.22.1680.953" timestamp="1589549878853" />
+    <state x="432" y="250" width="816" height="550" key="find.popup" timestamp="1591912702205">
+      <screen x="0" y="0" width="1680" height="1050" />
+    </state>
+    <state x="432" y="250" width="816" height="550" key="find.popup/0.0.1680.1050@0.0.1680.1050" timestamp="1591912702205" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/tendencies_interaction_def$mainLaura.coverage" NAME="mainLaura Coverage Results" MODIFIED="1587917413647" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/interaction$main__1_.coverage" NAME="main (1) Coverage Results" MODIFIED="1589559552894" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/interaction$main__1_.coverage" NAME="main (1) Coverage Results" MODIFIED="1591962606574" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/tendencies_interaction_def$main__1_.coverage" NAME="main (1) Coverage Results" MODIFIED="1587909309764" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/interaction$mainLaura.coverage" NAME="main Coverage Results" MODIFIED="1588552650099" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
